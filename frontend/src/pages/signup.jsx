@@ -1,6 +1,6 @@
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { NavBar0 } from "../components/NavBar0";
+import NavBar0 from "../components/NavBar0";
 import {Container, TopContainer, BottomContainer} from  "../styles/pageStyles/AuthStyles";
 // import { Link, useNavigate } from "react-router-dom";
 // import { useFormik } from "formik";
