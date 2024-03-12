@@ -76,7 +76,7 @@ function Signup() {
       };
 
       try {
-        const response = await axios.post("http://localhost:8800/api/auth/signup", userData);
+        const response = await axios.post("http://localhost:8000/api/auth/signup", userData);
         const user = response.data;
         if (user) {
           dispatch({ type: "LOGIN_SUCCESS", payload: user });
