@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import cookieParser from 'cookie-parser';
 import authRoute from './routes/auth.js';
+import { dbConfig } from "./database/dbConfig.mjs";
 
 const app = express();
 app.use(
@@ -14,6 +15,8 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+
+dbConfig.createDatabaseAndTable();
 
 app.use("/api/auth", authRoute);
 

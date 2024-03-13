@@ -2,7 +2,7 @@ import React, { useContext, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar0 from "../components/NavBar0";
-import { AuthContext } from "../context/AuthContext";
+import { AuthContext } from "../context/AuthContext.js";
 import {Container, TopContainer, BottomContainer} from  "../styles/pageStyles/AuthStyles";
 import {
   GlobalStyle,
@@ -68,13 +68,13 @@ function Signup() {
       if (values.agreedToTerms === false) {
         return toast.error("Please accept terms and conditions");
       }
-
+    
       const userData = {
-        username: values.name, // Update the property name to 'username'
+        username: values.name,
         email: values.email,
         password: values.password,
       };
-
+    
       try {
         const response = await axios.post("http://localhost:8000/api/auth/signup", userData);
         const user = response.data;
@@ -83,10 +83,17 @@ function Signup() {
           navigate("/"); // Redirect to the desired route after successful signup
         }
       } catch (error) {
-        toast.error(error.response.data.message);
-        dispatch({ type: "LOGIN_FAILURE", payload: error.response.data.message });
+        if (error.response && error.response.data) {
+          // Check if error.response exists and has data
+          toast.error(error.response.data.message);
+          dispatch({ type: "LOGIN_FAILURE", payload: error.response.data.message });
+        } else {
+          // Handle other types of errors
+          console.error("An error occurred:", error);
+          toast.error("An error occurred. Please try again later.");
+        }
       }
-    },
+    },    
   });
 
   // useEffect(() => {
