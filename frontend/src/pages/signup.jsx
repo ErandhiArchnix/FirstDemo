@@ -70,7 +70,7 @@ function Signup() {
       }
     
       const userData = {
-        username: values.name,
+        user_name: values.name,
         email: values.email,
         password: values.password,
       };
@@ -78,7 +78,9 @@ function Signup() {
       try {
         const response = await axios.post("http://localhost:8000/api/auth/signup", userData);
         const user = response.data;
+        console.log("Sent to backend")
         if (user) {
+          console.log(user);
           dispatch({ type: "LOGIN_SUCCESS", payload: user });
           navigate("/"); // Redirect to the desired route after successful signup
         }
@@ -87,18 +89,14 @@ function Signup() {
           // Check if error.response exists and has data
           toast.error(error.response.data.message);
           dispatch({ type: "LOGIN_FAILURE", payload: error.response.data.message });
-        } else {
-          // Handle other types of errors
-          console.error("An error occurred:", error);
-          toast.error("An error occurred. Please try again later.");
         }
       }
     },    
   });
 
-  // useEffect(() => {
-  //   dispatch({ type: "LOGOUT" }); // Reset the state when the component unmounts
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch({ type: "LOGOUT" }); // Reset the state when the component unmounts
+  }, [dispatch]);
 
   return (
     <Container>
