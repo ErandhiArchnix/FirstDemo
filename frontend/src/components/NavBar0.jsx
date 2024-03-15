@@ -20,11 +20,11 @@ function NavbarHorizontal() {
         </LeftSide>
 
         <Middle>
-          <StyledNavLink to="/Pages/">Home</StyledNavLink>
+          <StyledNavLink to="/">Home</StyledNavLink>
 
-          <StyledNavLink to="/Pages/courses">Map</StyledNavLink>
+          <StyledNavLink to="/map">Map</StyledNavLink>
 
-          <StyledNavLink to="/Pages/About">About</StyledNavLink>
+          <StyledNavLink to="/about">About</StyledNavLink>
         </Middle>
 
         <RightSide>
