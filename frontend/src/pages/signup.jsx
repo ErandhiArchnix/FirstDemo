@@ -1,30 +1,27 @@
-import React, {useState} from "react";
+import React, { useContext } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar0 from "../components/NavBar0";
 import ChooseRole from "../components/ChooseRole";
 import SignUp01 from "../components/Signup01";
 import SignUp02 from "../components/Signup02";
+import { AuthContext } from "../context/AuthContext";
 
 import {Container, TopContainer, BottomContainer} from  "../styles/pageStyles/AuthStyles";
 
 function Signup() {
-  const [currentStep, setCurrentStep] = useState(0);
+  const { currentStep, formData, dispatch } = useContext(AuthContext);
 
   const renderStep = (step) => {
     switch (step) {
       case 0:
         return <ChooseRole />;
       case 1:
-        return <SignUp01 />;
+        return <SignUp01 dispatch={dispatch} data={formData[1]} />;
       case 2:
-        return <SignUp02 />;
+        return <SignUp02 dispatch={dispatch} data={formData[2]} />;
       default:
         return null;
     }
-  };
-
-  const handleStepCompletion = () => {
-    setCurrentStep((prevStep) => prevStep + 1);
   };
 
   return (
@@ -39,4 +36,4 @@ function Signup() {
   )
 }
 
-export default Signup
+export default Signup;

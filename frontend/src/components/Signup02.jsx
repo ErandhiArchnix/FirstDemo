@@ -1,9 +1,16 @@
-import React from 'react'
+import React from "react";
 
-function Signup02() {
+const SignUp02 = ({ dispatch }) => {
+  const handlePrevious = () => {
+    dispatch({ type: "PREVIOUS_STEP" });
+  };
+
   return (
-    <div>Signup02</div>
-  )
-}
+    <div>
+      {/* Your SignUp02 component JSX */}
+      <button onClick={handlePrevious}>Previous</button>
+    </div>
+  );
+};
 
-export default Signup02
+export default SignUp02;
