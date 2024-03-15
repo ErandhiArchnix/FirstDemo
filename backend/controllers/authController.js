@@ -15,9 +15,24 @@ export const getUsers = async (req, res) => {
   });
 };
 
-export const signup = async (req, res, next) => {
+export const createUser = async (req, res, next) => {
+  const sql = "INSERT INTO user (user_type) VALUES (?)";
+  const value = req.body.user_type;
+  if (value === "traveler" || value === "guide") {
+    dbConfig.connection.query(sql, [value], (err, result) => {
+      if (err) return res.json(err);
+      console.log("Created user");
+      return res.status(200).json({ Status: "Success" });
+    });
+  } else {
+    return next(createError(400, "User type not valid"));
+  }
+};
+
+export const signup01 = async (req, res, next) => {
   try {
     //validation
+    //check for requires fields
     if (!req.body.user_name || !req.body.email || !req.body.password) {
       return next(createError(400, "Please fill in all the required fields."));
     }
@@ -63,21 +78,30 @@ export const signup = async (req, res, next) => {
           (usernameErr, usernameResults) => {
             if (usernameErr) {
               console.error("Error checking username existence:", usernameErr);
-              return next(createError(500, "Error checking username existence"));
+              return next(
+                createError(500, "Error checking username existence")
+              );
             }
             if (usernameResults.length > 0) {
               return next(createError(400, "Username already in use."));
             }
 
-            // Insert user data into the database
+            // Update user data into the database
             const sql =
-              "INSERT INTO user (`user_name`, `email`, `password`) VALUES (?)";
-            const values = [req.body.user_name, req.body.email, hash];
-            dbConfig.connection.query(sql, [values], (err, result) => {
+              "UPDATE user SET user_name = ?, email = ?, password = ? WHERE user_id = ?";
+            const values = [
+              req.body.user_name,
+              req.body.email,
+              hash
+            ];
+
+            const id = req.params.user_id;
+
+            dbConfig.connection.query(sql, [...values, id], (err, result) => {
               if (err) return res.json(err);
               console.log("Success");
               return res.status(200).json({ Status: "Success" });
-            });
+            });            
           }
         );
       }
