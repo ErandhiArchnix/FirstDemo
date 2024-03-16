@@ -54,6 +54,11 @@ export const StyledButton = styled.button`
   color: #ffff;
   margin-left: 20px;
   margin-right: 20px;
+  font-weight: 600;
+
+  &:hover {
+    color: black;
+  }
 `;
 
 export const ImgContainer = styled.div`
