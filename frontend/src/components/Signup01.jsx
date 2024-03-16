@@ -34,7 +34,6 @@ function Signup() {
     useFormik({
       initialValues: {
         name: formData[1]?.name || "",
-        selectedRole: formData[0]?.role || "",
         email: formData[1]?.email || "",
         password: formData[1]?.password || "",
         confirmPassword: formData[1]?.confirmPassword || "",

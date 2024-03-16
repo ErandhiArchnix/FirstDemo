@@ -1,9 +1,25 @@
 import React, { useState, useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
+import { toast } from "react-toastify";
+import { Container } from "../styles/pageStyles/AuthStyles";
+import {
+  GlobalStyle,
+  Title,
+  FirstMsg,
+  RoleButton,
+  btnStyles,
+  BottomContainer,
+  ButtonWrapper,
+  CommandButton,
+} from "../styles/componentStyles/ChooseRoleStyles";
+import Stack from "@mui/material/Stack";
+import Button from "@mui/material/Button";
+import { useNavigate } from "react-router-dom";
 
 function RoleSelection() {
   const { dispatch } = useContext(AuthContext);
   const [selectedRole, setSelectedRole] = useState(null);
+  const navigate = useNavigate();
 
   // Function to handle button click for selecting a role
   const handleRoleSelection = (role) => {
@@ -18,48 +34,90 @@ function RoleSelection() {
       localStorage.setItem("selectedRole", role);
       setSelectedRole(role);
       dispatch({ type: "UPDATE_SELECTED_ROLE", payload: role });
-      // dispatch({ type: "NEXT_STEP" });
     }
   };
 
-  useEffect(() => {
-    // Check local storage for previously selected role
-    const storedRole = localStorage.getItem("selectedRole");
-    if (storedRole) {
-      // If a role is stored, update the state with the selected role
-      setSelectedRole(storedRole);
-      dispatch({ type: "UPDATE_SELECTED_ROLE", payload: storedRole });
-      // dispatch({ type: "NEXT_STEP" });
-    }
-  }, [dispatch]);
+  const handleCancel = () => {
+    localStorage.removeItem("selectedRole");
+    localStorage.removeItem("user")
+    setSelectedRole(null);
+    // dispatch({ type: "UPDATE_SELECTED_ROLE", payload: null });
+    navigate("/");
+  };
+
+  // useEffect(() => {
+  //   // Check local storage for previously selected role
+  //   const storedRole = localStorage.getItem("selectedRole");
+  //   if (storedRole) {
+  //     // If a role is stored, update the state with the selected role
+  //     setSelectedRole(storedRole);
+  //     dispatch({ type: "UPDATE_SELECTED_ROLE", payload: storedRole });
+  //   }
+  // }, [dispatch]);
 
   const handleNext = () => {
-    dispatch({ type: "NEXT_STEP" });
-  }
+    const storedRole = localStorage.getItem("selectedRole");
+    if (storedRole === "null") {
+      toast.error("Please select a role before proceeding.");
+    } else {
+      console.log(storedRole);
+      dispatch({ type: "NEXT_STEP" });
+    }
+  };
 
   return (
-    <div>
-      <h2>Choose Your Role</h2>
-      <button
-        onClick={() => handleRoleSelection("traveler")}
-        disabled={selectedRole === "traveler"}
-        style={{
-          backgroundColor: selectedRole === "traveler" ? "gray" : "white",
-        }}
-      >
-        Traveler
-      </button>
-      <button
-        onClick={() => handleRoleSelection("guide")}
-        disabled={selectedRole === "guide"}
-        style={{
-          backgroundColor: selectedRole === "guide" ? "gray" : "white",
-        }}
-      >
-        Guide
-      </button>
-      <button onClick={handleNext}>Next</button>
-    </div>
+    <Container>
+      <BottomContainer>
+        <GlobalStyle />
+        <Title>Choose Your Role</Title>
+        <FirstMsg className="signup">
+          It's a Place to Meet Travelers and Guides
+        </FirstMsg>
+        <RoleButton>
+          <Button
+            onClick={() => handleRoleSelection("traveler")}
+            variant="contained"
+            sx={{
+              ...btnStyles,
+              ...(selectedRole === "traveler" &&
+                btnStyles["&.MuiButton-outlined"]),
+            }}
+          >
+            Traveler
+          </Button>
+        </RoleButton>
+
+        <RoleButton>
+          <Button
+            onClick={() => handleRoleSelection("guide")}
+            variant="contained"
+            sx={{
+              ...btnStyles,
+              ...(selectedRole === "guide" &&
+                btnStyles["&.MuiButton-outlined"]),
+            }}
+          >
+            Guide
+          </Button>
+        </RoleButton>
+        <ButtonWrapper>
+          <CommandButton>
+            <Stack spacing={2} direction="row">
+              <Button onClick={handleCancel} sx={btnStyles} variant="text">
+                Cancel
+              </Button>
+            </Stack>
+          </CommandButton>
+          <CommandButton>
+            <Stack spacing={2} direction="row">
+              <Button onClick={handleNext} sx={btnStyles} variant="text">
+                Next
+              </Button>
+            </Stack>
+          </CommandButton>
+        </ButtonWrapper>
+      </BottomContainer>
+    </Container>
   );
 }
 
