@@ -28,7 +28,7 @@ function NavbarHorizontal() {
         </Middle>
 
         <RightSide>
-          {user ? (
+          {/* {user ? (
             <>
               <StyledNavLink to="/dashboard/">Dashboard</StyledNavLink>
               <LoginBtn>
@@ -44,7 +44,7 @@ function NavbarHorizontal() {
               </LoginBtn>
             </>
           ) : (
-            <>
+            <> */}
               <LoginBtn>
                 <Stack spacing={2} direction="row">
                   <Button
@@ -68,8 +68,8 @@ function NavbarHorizontal() {
                   </Button>
                 </Stack>
               </LogoutBtn>
-            </>
-          )}
+            {/* </>
+          )} */}
         </RightSide>
       </MainContainer>
     </div>

@@ -124,20 +124,20 @@ export const login = async (req, res, next) => {
     const user = "SELECT * FROM user WHERE email =?";
 
     dbConfig.connection.query(user, email, (err, data) => {
-      if (err) return res.json(err);
+      if (err) return res.status(500).json({ message: "Internal server error." });
 
       if (data.length > 0) {
         bcrypt.compare(password.toString(), data[0].password, (err, result) => {
           if (err) return res.json(err);
           if (result) {
             console.log("Login successful");
-            return res.status(200).json({ Status: "Success" });
+            return res.status(200).json(data);
           } else {
-            return next(createError(400, "Incorrect password"));
+            return res.status(400).json({ message: "Incorrect password" });
           }
         });
       } else {
-        return next(createError(404, "User not found"));
+        return res.status(404).json({ message: "User not found" });
       }
     });
   } catch (err) {

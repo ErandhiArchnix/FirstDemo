@@ -6,6 +6,8 @@ import Signup from "./pages/signup";
 import SiteHome from "./pages/siteHome";
 import SiteMap from "./pages/siteMap";
 import SiteAbout from "./pages/siteAbout";
+import Login from "./pages/login";
+import Dashboard from "./pages/dashboard";
 
 axios.defaults.withCredentials = true;
 
@@ -19,6 +21,8 @@ function App() {
             <Route path="/" element={<SiteHome />} />
             <Route path="/map" element={<SiteMap />} />
             <Route path="/about" element={<SiteAbout />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
           </Routes>
       </Router>
     </div>
