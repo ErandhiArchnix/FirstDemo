@@ -30,6 +30,7 @@ import NavBar0 from "../components/NavBar0";
 function Login() {
   const navigate = useNavigate();
   const { user, dispatch } = useContext(AuthContext);
+  axios.defaults.withCredentials = true;
 
   const {
     values,
@@ -37,7 +38,6 @@ function Login() {
     handleChange,
     handleBlur,
     touched,
-    isSubmitting,
     handleSubmit,
   } = useFormik({
     initialValues: {

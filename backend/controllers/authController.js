@@ -29,6 +29,26 @@ export const createUser = async (req, res, next) => {
   }
 };
 
+export const verifyUser = async (req, res, next) => {
+  const token = req.cookies.token;
+  if(!token){
+    return res.json({Error: "Please Login"});
+  } else {
+    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+      if (err) {
+        return res.json({Error: "Invalid Token"});
+      } else {
+        req.user_type = decoded.user_type;
+        next();
+      }
+    });
+  }
+};
+
+export const getToken = async (req, res) => {
+  return res.json({Status: "Success", user_type: req.user_type})
+}
+
 export const signup = async (req, res, next) => {
   try {
     //validation
@@ -130,6 +150,13 @@ export const login = async (req, res, next) => {
         bcrypt.compare(password.toString(), data[0].password, (err, result) => {
           if (err) return res.json(err);
           if (result) {
+            const id = data[0].user_id;
+            const role = data[0].user_type;
+            const token = jwt.sign({
+              id,
+              role,
+            }, process.env.JWT_SECRET,  { expiresIn: "1d" });
+            res.cookie("token", token);
             console.log("Login successful");
             return res.status(200).json(data);
           } else {
@@ -143,4 +170,9 @@ export const login = async (req, res, next) => {
   } catch (err) {
     next(err);
   }
+};
+
+export const logout = (req, res) => {
+  res.clearCookie('token');
+  return res.status(200).json({ message: "Logout successful" });
 };

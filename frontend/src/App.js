@@ -7,7 +7,7 @@ import SiteHome from "./pages/siteHome";
 import SiteMap from "./pages/siteMap";
 import SiteAbout from "./pages/siteAbout";
 import Login from "./pages/login";
-import Dashboard from "./pages/dashboard";
+import Dashboard from "./pages/mainPage";
 
 axios.defaults.withCredentials = true;
 
