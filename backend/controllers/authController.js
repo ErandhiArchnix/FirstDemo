@@ -112,3 +112,35 @@ export const signup = async (req, res, next) => {
     next(err);
   }
 };
+
+export const login = async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return next(createError(400, "Please add email and password."));
+    }
+
+    const user = "SELECT * FROM user WHERE email =?";
+
+    dbConfig.connection.query(user, email, (err, data) => {
+      if (err) return res.json(err);
+
+      if (data.length > 0) {
+        bcrypt.compare(password.toString(), data[0].password, (err, result) => {
+          if (err) return res.json(err);
+          if (result) {
+            console.log("Login successful");
+            return res.status(200).json({ Status: "Success" });
+          } else {
+            return next(createError(400, "Incorrect password"));
+          }
+        });
+      } else {
+        return next(createError(404, "User not found"));
+      }
+    });
+  } catch (err) {
+    next(err);
+  }
+};
