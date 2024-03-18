@@ -3,6 +3,8 @@ import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
+import GuideDashboard from "../components/GuideDashboard";
+import TravelerDashboard from "../components/TravelerDashboard";
 
 function Main() {
   const { dispatch } = useContext(AuthContext);
@@ -17,9 +19,13 @@ function Main() {
         setAuth(true);
         setRole(res.data.user_type);
         console.log(res.data.Status);
+        console.log(role);
+        return;
       } else {
         setAuth(false);
         console.log(res.data.Error);
+        toast.error("Access Denied. Please Login")
+        navigate("/login")
       }
     });
   });
@@ -41,9 +47,13 @@ function Main() {
         <div>
           <h1>Dashboard</h1>
           <button onClick={handleLogout}>Logout</button>
+          {role === "traveler" && <TravelerDashboard/>}
+          {role === "guide" && <GuideDashboard/>}
         </div>
       ) : (
-        toast.error("Access Denied. Please Login") && navigate("/login")
+        <div>
+        
+        </div>
       )}
     </div>
   );

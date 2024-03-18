@@ -151,10 +151,10 @@ export const login = async (req, res, next) => {
           if (err) return res.json(err);
           if (result) {
             const id = data[0].user_id;
-            const role = data[0].user_type;
+            const user_type = data[0].user_type;
             const token = jwt.sign({
               id,
-              role,
+              user_type,
             }, process.env.JWT_SECRET,  { expiresIn: "1d" });
             res.cookie("token", token);
             console.log("Login successful");
