@@ -1,101 +1,116 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import 'bootstrap/dist/css/bootstrap.min.css';
-import NavBar0 from "../components/NavBar0";
 import { AuthContext } from "../context/AuthContext.js";
-import {Container, TopContainer, BottomContainer} from  "../styles/pageStyles/AuthStyles";
+import { Container, BottomContainer } from "../styles/pageStyles/AuthStyles";
 import {
   GlobalStyle,
   Form,
   Title,
   FirstMsg,
-  Name,
+  Region,
   FormInput,
   ErrorMsg,
-  Email,
-  Password,
   TermsAndCoLink,
   CustomCheck,
   BoldTxt,
   Btn,
-  BottomText
-} from "../styles/componentStyles/AuthStyles";
+  BottomText,
+  ButtonWrapper,
+  SelectWrapper,
+  PhoneCover,
+} from "../styles/componentStyles/Signup02Styles.js";
 import { useFormik } from "formik";
-import * as Yup from "yup"; 
+import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { MdEmail } from "react-icons/md";
-import { BsFillPersonFill } from "react-icons/bs";
-import PasswordInput from "../components/PasswordInput";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 function Signup02() {
-
   const navigate = useNavigate();
-  const { dispatch } = useContext(AuthContext); // Access the dispatch function from the AuthContext
+  const { dispatch, formData } = useContext(AuthContext); // Access the dispatch function from the AuthContext
 
-  const {
-    values,
-    errors,
-    handleChange,
-    handleBlur,
-    touched,
-    isSubmitting,
-    handleSubmit,
-  } = useFormik({
-    initialValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      agreedToTerms: false,
-    },
-    validationSchema: Yup.object({
-      name: Yup.string().required("Name is required"),
-      email: Yup.string()
-        .email("Invalid email address")
-        .required("Email is required"),
-      password: Yup.string()
-        .required("Password is required")
-        .matches(
-          /(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/,
-          "please create a stronger password"
-        ),
-      confirmPassword: Yup.string()
-        .required("Confirm password is required")
-        .oneOf([Yup.ref("password"), null], "Passwords must match"),
-    }),
-    onSubmit: async (values) => {
-      if (values.agreedToTerms === false) {
-        return toast.error("Please accept terms and conditions");
-      }
-    
-      const userData = {
-        user_name: values.name,
-        email: values.email,
-        password: values.password,
-      };
-    
-      try {
-        const response = await axios.post("http://localhost:8000/api/auth/signup", userData);
-        const user = response.data;
-        console.log("Sent to backend")
-        if (user) {
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [valid, setValid] = useState(true);
+
+  const handleTPChange = (value) => {
+    setPhoneNumber(value);
+    setValid(validatePhoneNumber(value));
+  };
+
+  const validatePhoneNumber = (phoneNumber) => {
+    const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/;
+    return phoneNumberPattern.test(phoneNumber);
+  };
+
+  const { values, errors, handleChange, handleBlur, touched, handleSubmit } =
+    useFormik({
+      initialValues: {
+        name: formData[1]?.name || "",
+        email: formData[1]?.email || "",
+        password: formData[1]?.password || "",
+        confirmPassword: formData[1]?.confirmPassword || "",
+        gender: formData[2]?.gender || "",
+        telephoneNumber: phoneNumber || "",
+        region: formData[2]?.region || "",
+        agreedToTerms: false,
+      },
+      validationSchema: Yup.object({
+        gender: Yup.string().required("Gender is required"),
+        region: Yup.string().required("Region is required"),
+      }),
+      onSubmit: async (values) => {
+        if (values.agreedToTerms === false) {
+          return toast.error("Please accept terms and conditions");
+        }
+
+        const userData = {
+          user_name: values.name,
+          email: values.email,
+          password: values.password,
+          gender: values.gender,
+          phone_number: phoneNumber,
+          region: values.region,
+          user_type: localStorage.getItem("selectedRole"),
+        };
+
+        console.log(userData);
+
+        try {
+          const response = await axios.post(
+            "http://localhost:8000/api/auth/signup",
+            userData
+          );
+          const user = response.data;
+          console.log("Sent to backend");
           console.log(user);
-          dispatch({ type: "LOGIN_SUCCESS", payload: user });
-          navigate("/"); // Redirect to the desired route after successful signup
+          if (user) {
+            console.log(user);
+            dispatch({ type: "LOGIN_SUCCESS", payload: user });
+            navigate("/");
+          }
+        } catch (error) {
+          if (error.response && error.response.data) {
+            // Check if error.response exists and has data
+            toast.error(error.response.data.message);
+            dispatch({
+              type: "LOGIN_FAILURE",
+              payload: error.response.data.message,
+            });
+          }
         }
-      } catch (error) {
-        if (error.response && error.response.data) {
-          // Check if error.response exists and has data
-          toast.error(error.response.data.message);
-          dispatch({ type: "LOGIN_FAILURE", payload: error.response.data.message });
-        }
-      }
-    },    
-  });
+      },
+    });
 
   const handlePrevious = () => {
+    console.log(formData[2]?.gender);
+    console.log(formData[1]?.name);
+    console.log(phoneNumber);
     dispatch({ type: "PREVIOUS_STEP" });
+    dispatch({
+      type: "UPDATE_FORM_DATA",
+      payload: { step: 2, data: values },
+    });
   };
 
   useEffect(() => {
@@ -104,121 +119,93 @@ function Signup02() {
 
   return (
     <Container>
-        <BottomContainer>
-          <GlobalStyle />
-          <Form onSubmit={handleSubmit}>
-              <Title>Sign Up</Title>
-              <FirstMsg className="signup">
-                Compete your details for better service.
-              </FirstMsg>
+      <BottomContainer>
+        <GlobalStyle />
+        <Form onSubmit={handleSubmit}>
+          <Title>Sign Up</Title>
+          <FirstMsg className="signup">
+            Complete your details for better service.
+          </FirstMsg>
 
-              <Name>
-                <i>
-                    <BsFillPersonFill size={18} />
-                </i>
-                <FormInput
-                    type="text"
-                    className={
-                      touched.name && errors.name ? "error" : ""
-                    }
-                    placeholder="Name"
-                    name="name"
-                    value={values.name}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                />
-                {touched.name && errors.name && (
-                    <ErrorMsg>{errors.name}</ErrorMsg>
-                )}
-              </Name>
+          <SelectWrapper>
+            <select
+              id="gender"
+              name="gender"
+              placeholder="Gender"
+              value={values.gender}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            >
+              <option value="">Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+            {touched.gender && errors.gender && (
+              <ErrorMsg>{errors.gender}</ErrorMsg>
+            )}
+          </SelectWrapper>
 
-              <Email>
-                <i>
-                    <MdEmail size={18} />
-                </i>
-                <FormInput
-                    type="email"
-                    className={touched.email &&errors.email ? "error" : ""}
-                    placeholder="Email"
-                    name="email"
-                    value={values.email}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                />
-                {touched.email && errors.email && (
-                    <ErrorMsg>{errors.email}</ErrorMsg>
-                )}
-              </Email>
+          <PhoneCover>
+            Phone Number:
+            <PhoneInput
+              country={"us"}
+              className={
+                touched.telephoneNumber && errors.telephoneNumber ? "error" : ""
+              }
+              value={values.telephoneNumber}
+              onChange={handleTPChange}
+              onBlur={handleBlur}
+            />
+            {!valid && <ErrorMsg>Please enter a valid phone number.</ErrorMsg>}
+          </PhoneCover>
 
-              <Password>
-                <PasswordInput
-                    className={touched.password && errors.password ? "error" : ""}
-                    placeholder="Password"
-                    name="password"
-                    value={values.password}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                />
-                {touched.password && errors.password && (
-                    <ErrorMsg>{errors.password}</ErrorMsg>
-                )}
-              </Password>
+          <Region>
+            <FormInput
+              type="text"
+              id="region"
+              name="region"
+              className={touched.region && errors.region ? "error" : ""}
+              placeholder="Region"
+              value={values.region}
+              onChange={handleChange}
+              onBlur={handleBlur}
+            />
+            {touched.region && errors.region && (
+              <ErrorMsg>{errors.region}</ErrorMsg>
+            )}
+          </Region>
 
-              <Password>
-                <PasswordInput
-                    className={touched.confirmPassword && errors.confirmPassword ? "error" : ""}
-                    placeholder="Confirm password"
-                    name="confirmPassword"
-                    value={values.confirmPassword}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    onPaste={(e) => {
-                      e.preventDefault();
-                      toast.error("Cannot paste password");
-                      return false;
-                    }}
-                />
-                {touched.confirmPassword && errors.confirmPassword && (
-                    <ErrorMsg>{errors.confirmPassword}</ErrorMsg>
-                )}
-              </Password>
+          <TermsAndCoLink>
+            <CustomCheck
+              type="checkbox"
+              id="customCheck1"
+              name="agreedToTerms"
+              value={values.agreedToTerms}
+              onChange={handleChange}
+            />
+            &nbsp;
+            <BoldTxt>
+              <label className="boldTxt">
+                I agree to the{" "}
+                <Link to="/signup/termsandconditions">terms & conditions</Link>
+              </label>
+            </BoldTxt>
+          </TermsAndCoLink>
 
-              <TermsAndCoLink>
-                <CustomCheck
-                    type="checkbox"
-                    id="customCheck1"
-                    name="agreedToTerms"
-                    value={values.agreedToTerms}
-                    onChange={handleChange}
-                />
-                &nbsp;
-                <BoldTxt>
-                    <label className="boldTxt">
-                      I agree to the{" "}
-                      <Link to="/signup/termsandconditions">
-                          terms & conditions
-                      </Link>
-                    </label>
-                </BoldTxt>
-              </TermsAndCoLink>
+          <ButtonWrapper>
+            <Btn onClick={handlePrevious}>Previous</Btn>
+            <Btn type="submit">Sign Up</Btn>
+          </ButtonWrapper>
 
-              <Btn disabled={isSubmitting} type="submit">
-                Sign Up
-              </Btn>
-
-              <button onClick={handlePrevious}>Previous</button>
-
-              <button onClick={handlePrevious}>Previous</button>
-
-              <BottomText>
-                <BoldTxt>
-                    Already have an account? <Link to="/login"> Log in</Link>
-                </BoldTxt>
-              </BottomText>
-          </Form>
-        </BottomContainer>
+          <BottomText>
+            <BoldTxt>
+              Already have an account? <Link to="/login"> Log in</Link>
+            </BoldTxt>
+          </BottomText>
+        </Form>
+      </BottomContainer>
     </Container>
-  )
+  );
 }
 
-export default Signup02
+export default Signup02;

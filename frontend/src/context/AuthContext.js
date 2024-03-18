@@ -5,7 +5,7 @@ const INITIAL_STATE = {
   loading: false,
   error: null,
   selectedRole: null,
-  currentStep: 1, // Add currentStep to track the step of the signup process
+  currentStep: 0, // Add currentStep to track the step of the signup process
   formData: {}, // Add formData to store temporary form data
 };
 
@@ -40,6 +40,8 @@ const AuthReducer = (state, action) => {
         user: null,
         loading: false,
         error: null,
+        selectedRole: null,
+        formData: {}
       };
     case "NEXT_STEP":
       return {

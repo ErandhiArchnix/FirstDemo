@@ -13,7 +13,7 @@ import {
   Text,
   Top,
 } from "../styles/componentStyles/HeroSectionStyles";
-import {useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
   const navigate = useNavigate();
@@ -34,7 +34,7 @@ function Home() {
         </SpanContainer>
         <ButtonWrapper>
           <StyledButton
-            onClick={() => navigate("signup")}
+            onClick={() => navigate("/signup")}
           >
             Start Your Journey
           </StyledButton>

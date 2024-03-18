@@ -29,7 +29,7 @@ export const createUser = async (req, res, next) => {
   }
 };
 
-export const signup01 = async (req, res, next) => {
+export const signup = async (req, res, next) => {
   try {
     //validation
     //check for requires fields
@@ -88,20 +88,22 @@ export const signup01 = async (req, res, next) => {
 
             // Update user data into the database
             const sql =
-              "UPDATE user SET user_name = ?, email = ?, password = ? WHERE user_id = ?";
+              "INSERT INTO user (user_name, email, password, gender, phone_number, region, user_type) VALUES (?)";
             const values = [
               req.body.user_name,
               req.body.email,
-              hash
+              hash,
+              req.body.gender,
+              req.body.phone_number,
+              req.body.region,
+              req.body.user_type,
             ];
 
-            const id = req.params.user_id;
-
-            dbConfig.connection.query(sql, [...values, id], (err, result) => {
+            dbConfig.connection.query(sql, [values], (err, result) => {
               if (err) return res.json(err);
-              console.log("Success");
+              console.log("Created user");
               return res.status(200).json({ Status: "Success" });
-            });            
+            });
           }
         );
       }

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
 import NavBar0 from "../components/NavBar0";
 import ChooseRole from "../components/ChooseRole";
@@ -11,10 +11,14 @@ import {Container, TopContainer, BottomContainer} from  "../styles/pageStyles/Au
 function Signup() {
   const { currentStep, formData, dispatch } = useContext(AuthContext);
 
+  useEffect(() => {
+    dispatch({ type: "LOGOUT" }); // Reset the state when the component unmounts
+  }, [dispatch]);
+
   const renderStep = (step) => {
     switch (step) {
       case 0:
-        return <ChooseRole />;
+        return <ChooseRole dispatch={dispatch}/>;
       case 1:
         return <SignUp01 dispatch={dispatch} data={formData[1]} />;
       case 2:

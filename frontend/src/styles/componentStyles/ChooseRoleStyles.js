@@ -23,20 +23,7 @@ export const BottomContainer = styled.div`
   justify-content: center;
   max-width: 550px;
   min-width: 300px;
-  width: 65%;
-  height: 60%;
-  margin: 0% auto;
-  padding: 5px 5%;
-`;
-
-export const OutSection = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  max-width: 550px;
-  min-width: 300px;
-  width: 65%;
+  width: 50%;
   height: 60%;
   margin: 0% auto;
   padding: 5px 5%;
@@ -104,16 +91,16 @@ export const RoleButton = styled.button`
 
 export const btnStyles = {
   "&.MuiButton-text": {
-   color: "#F0634C",
-   border: "2px solid #F0634C",
-   borderRadius: "10px",
-   textTransform: "none",
-   padding: "5px 30px",
-   fontWeight: 600,
-   fontSize: "20px",
-   lineHeight: "36px",
-   letterSpacing: "0em",
-   textAlign: "center",
+    color: "#F0634C",
+    border: "2px solid #F0634C",
+    borderRadius: "10px",
+    textTransform: "none",
+    padding: "5px 30px",
+    fontWeight: 600,
+    fontSize: "20px",
+    lineHeight: "36px",
+    letterSpacing: "0em",
+    textAlign: "center",
   },
   "&.MuiButton-text.active": {
     color: "#000000",
@@ -159,4 +146,13 @@ export const ButtonWrapper = styled.div`
   margin-top: 100px;
 `;
 
+export const BoldTxt = styled.span`
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+`;
 
+export const BottomText = styled.div`
+  margin-top: 10px;
+  text-decoration: none;
+`;

@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
-import "bootstrap/dist/css/bootstrap.min.css";
 import { AuthContext } from "../context/AuthContext.js";
 import { Container, BottomContainer } from "../styles/pageStyles/AuthStyles";
 import {
@@ -13,8 +12,6 @@ import {
   ErrorMsg,
   Email,
   Password,
-  TermsAndCoLink,
-  CustomCheck,
   BoldTxt,
   Btn,
   BottomText,
@@ -37,6 +34,9 @@ function Signup() {
         email: formData[1]?.email || "",
         password: formData[1]?.password || "",
         confirmPassword: formData[1]?.confirmPassword || "",
+        gender: formData[2]?.gender || "",
+        telephoneNumber: formData[2]?.telephoneNumber || "",
+        region: formData[2]?.region || "",
         agreedToTerms: false,
       },
       validationSchema: Yup.object({
@@ -55,10 +55,6 @@ function Signup() {
           .oneOf([Yup.ref("password"), null], "Passwords must match"),
       }),
       onSubmit: async (values) => {
-        if (values.agreedToTerms === false) {
-          return toast.error("Please accept terms and conditions");
-        }
-
         dispatch({
           type: "UPDATE_FORM_DATA",
           payload: { step: 1, data: values },
@@ -67,13 +63,17 @@ function Signup() {
       },
     });
 
+  const handlePrevious = () => {
+    dispatch({ type: "PREVIOUS_STEP" });
+    dispatch({
+      type: "UPDATE_FORM_DATA",
+      payload: { step: 1, data: values },
+    });
+  };
+
   useEffect(() => {
     dispatch({ type: "LOGOUT" }); // Reset the state when the component unmounts
   }, [dispatch]);
-
-  const handlePrevious = () => {
-    dispatch({ type: "PREVIOUS_STEP" });
-  };
 
   return (
     <Container>
@@ -154,29 +154,13 @@ function Signup() {
             )}
           </Password>
 
-          <TermsAndCoLink>
-            <CustomCheck
-              type="checkbox"
-              id="customCheck1"
-              name="agreedToTerms"
-              value={values.agreedToTerms}
-              onChange={handleChange}
-            />
-            &nbsp;
-            <BoldTxt>
-              <label className="boldTxt">
-                I agree to the{" "}
-                <Link to="/signup/termsandconditions">terms & conditions</Link>
-              </label>
-            </BoldTxt>
-          </TermsAndCoLink>
           <ButtonWrapper>
             <Btn onClick={handlePrevious}>Previous</Btn>
             <Btn>Next</Btn>
           </ButtonWrapper>
           <BottomText>
             <BoldTxt>
-              Already have an account? <Link to="/login"> Log in</Link>
+              Already have an account? <Link to="/login"> Log in </Link>
             </BoldTxt>
           </BottomText>
         </Form>
