@@ -85,9 +85,11 @@ function Signup02() {
           console.log("Sent to backend");
           console.log(user);
           if (user) {
+            // console.log(confirm.data.Status);
             console.log(user);
             dispatch({ type: "LOGIN_SUCCESS", payload: user });
-            navigate("/");
+            toast.success("Check your mailbox to confirm email.")
+            navigate("/login");
           }
         } catch (error) {
           if (error.response && error.response.data) {
@@ -113,9 +115,9 @@ function Signup02() {
     });
   };
 
-  useEffect(() => {
-    dispatch({ type: "LOGOUT" }); // Reset the state when the component unmounts
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch({ type: "LOGOUT" }); // Reset the state when the component unmounts
+  // }, [dispatch]);
 
   return (
     <Container>

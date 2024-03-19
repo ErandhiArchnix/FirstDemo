@@ -67,7 +67,8 @@ function Login() {
         const user = response.data;
         console.log(user);
         dispatch({ type: "LOGIN_SUCCESS", payload: user });
-        toast.success("Successfully logged in");
+        navigate("/dashboard");
+        toast.success(response.data.Status);
       } catch (error) {
         toast.error(error.response.data.message);
         dispatch({ type: "LOGIN_FAILURE", payload: error.message });
@@ -75,11 +76,11 @@ function Login() {
     },
   });
 
-  useEffect(() => {
-    if (user) {
-      navigate("/dashboard");
-    }
-  }, [user, navigate]);
+  // useEffect(() => {
+  //   if (user) {
+  //     navigate("/dashboard");
+  //   }
+  // }, [user, navigate]);
 
   return (
     <Container>

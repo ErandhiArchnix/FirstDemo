@@ -3,9 +3,18 @@ import jwt from "jsonwebtoken";
 import { dbConfig } from "../database/dbConfig.mjs";
 import { createError } from "../utils/errors.js";
 import validator from "validator";
+import nodemailer from "nodemailer";
 // import crypto from "crypto";
 
 const salt = 10;
+
+const transporter = nodemailer.createTransport({
+  service: "Gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASS,
+  },
+});
 
 export const getUsers = async (req, res) => {
   const sql = "SELECT * FROM user";
@@ -15,28 +24,14 @@ export const getUsers = async (req, res) => {
   });
 };
 
-export const createUser = async (req, res, next) => {
-  const sql = "INSERT INTO user (user_type) VALUES (?)";
-  const value = req.body.user_type;
-  if (value === "traveler" || value === "guide") {
-    dbConfig.connection.query(sql, [value], (err, result) => {
-      if (err) return res.json(err);
-      console.log("Created user");
-      return res.status(200).json({ Status: "Success" });
-    });
-  } else {
-    return next(createError(400, "User type not valid"));
-  }
-};
-
 export const verifyUser = async (req, res, next) => {
   const token = req.cookies.token;
-  if(!token){
-    return res.json({Error: "Please Login"});
+  if (!token) {
+    return res.json({ Error: "Please Login" });
   } else {
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
       if (err) {
-        return res.json({Error: "Invalid Token"});
+        return res.json({ Error: "Invalid Token" });
       } else {
         req.user_type = decoded.user_type;
         next();
@@ -45,9 +40,31 @@ export const verifyUser = async (req, res, next) => {
   }
 };
 
+export const verifyEmail = async (req, res, next) => {
+  try {
+    const { user_name } = jwt.verify(
+      req.params.token,
+      process.env.EMAIL_SECRET
+    );
+    const sql = "UPDATE user SET is_verified = ? WHERE user_name = ?";
+    dbConfig.connection.query(sql, [true, user_name], (err, result) => {
+      if (err) {
+        console.log("Error updating user:", err);
+        return res.status(400).json({ error: "Error updating user" });
+      }
+      console.log("User confirmed:", result);
+      return res.json({ Status: "User Confirmed. Please Login" });
+      // return res.redirect("http://localhost:3000/login");
+    });
+  } catch (err) {
+    console.log("Error confirming email:", err);
+    return res.status(400).json({ error: "Error confirming email" });
+  }
+};
+
 export const getToken = async (req, res) => {
-  return res.json({Status: "Success", user_type: req.user_type})
-}
+  return res.json({ Status: "Success", user_type: req.user_type });
+};
 
 export const signup = async (req, res, next) => {
   try {
@@ -106,6 +123,41 @@ export const signup = async (req, res, next) => {
               return next(createError(400, "Username already in use."));
             }
 
+            const user_name = req.body.user_name;
+            const token = jwt.sign(
+              {
+                user_name,
+              },
+              process.env.EMAIL_SECRET,
+              { expiresIn: "1d" }
+            );
+            if (!token) {
+              console.log("Error generating token");
+              return res.status(400).jason({ error: "Error generating token" });
+            } else {
+              const url = `http://localhost:3000/confirmation/${token}`;
+              transporter.sendMail(
+                {
+                  to: req.body.email,
+                  subject: "Confirm Email",
+                  html: `Please click this link to confirm your email: <a href="${url}">${url}</a>`,
+                },
+                (err, info) => {
+                  if (err) {
+                    console.log("Error sending confirmation email:", err);
+                    return res
+                      .status(400)
+                      .jason({ error: "Error sending confirmation email" });
+                  } else {
+                    console.log("Confirmation email sent:", info);
+                    return res
+                      .status(200)
+                      .jason({ error: "Confirmation email sent" });
+                  }
+                }
+              );
+            }
+
             // Update user data into the database
             const sql =
               "INSERT INTO user (user_name, email, password, gender, phone_number, region, user_type) VALUES (?)";
@@ -144,21 +196,30 @@ export const login = async (req, res, next) => {
     const user = "SELECT * FROM user WHERE email =?";
 
     dbConfig.connection.query(user, email, (err, data) => {
-      if (err) return res.status(500).json({ message: "Internal server error." });
+      if (err)
+        return res.status(500).json({ message: "Internal server error." });
 
       if (data.length > 0) {
         bcrypt.compare(password.toString(), data[0].password, (err, result) => {
           if (err) return res.json(err);
           if (result) {
-            const id = data[0].user_id;
-            const user_type = data[0].user_type;
-            const token = jwt.sign({
-              id,
-              user_type,
-            }, process.env.JWT_SECRET,  { expiresIn: "1d" });
-            res.cookie("token", token);
-            console.log("Login successful");
-            return res.status(200).json(data);
+            if (data[0].is_verified === 1) {
+              const id = data[0].user_id;
+              const user_type = data[0].user_type;
+              const token = jwt.sign(
+                {
+                  id,
+                  user_type,
+                },
+                process.env.JWT_SECRET,
+                { expiresIn: "1d" }
+              );
+              res.cookie("token", token);
+              console.log("Login successful");
+              return res.status(200).json({Status: "Login successful" });
+            } else{
+              return res.status(400).json({ message: "Email not verified. Please check you mailbox." });
+            }
           } else {
             return res.status(400).json({ message: "Incorrect password" });
           }
@@ -173,6 +234,6 @@ export const login = async (req, res, next) => {
 };
 
 export const logout = (req, res) => {
-  res.clearCookie('token');
+  res.clearCookie("token");
   return res.status(200).json({ message: "Logout successful" });
 };

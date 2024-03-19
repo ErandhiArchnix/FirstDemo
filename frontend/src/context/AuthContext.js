@@ -41,7 +41,8 @@ const AuthReducer = (state, action) => {
         loading: false,
         error: null,
         selectedRole: null,
-        formData: {}
+        formData: {},
+        currentStep: 0,
       };
     case "NEXT_STEP":
       return {

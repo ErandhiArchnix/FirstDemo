@@ -71,9 +71,9 @@ function Signup() {
     });
   };
 
-  useEffect(() => {
-    dispatch({ type: "LOGOUT" }); // Reset the state when the component unmounts
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch({ type: "LOGOUT" }); // Reset the state when the component unmounts
+  // }, [dispatch]);
 
   return (
     <Container>
