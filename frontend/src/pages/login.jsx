@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -29,52 +29,46 @@ import NavBar0 from "../components/NavBar0";
 
 function Login() {
   const navigate = useNavigate();
-  const { user, dispatch } = useContext(AuthContext);
+  const { dispatch } = useContext(AuthContext);
   axios.defaults.withCredentials = true;
 
-  const {
-    values,
-    errors,
-    handleChange,
-    handleBlur,
-    touched,
-    handleSubmit,
-  } = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-      rememberMe: false,
-    },
-    validationSchema: Yup.object({
-      email: Yup.string()
-        .email("Invalid email address")
-        .required("Email is required"),
-      password: Yup.string().required("Password is required"),
-    }),
-    onSubmit: async (values) => {
-      try {
-        dispatch({ type: "LOGIN_START" });
+  const { values, errors, handleChange, handleBlur, touched, handleSubmit } =
+    useFormik({
+      initialValues: {
+        email: "",
+        password: "",
+        rememberMe: false,
+      },
+      validationSchema: Yup.object({
+        email: Yup.string()
+          .email("Invalid email address")
+          .required("Email is required"),
+        password: Yup.string().required("Password is required"),
+      }),
+      onSubmit: async (values) => {
+        try {
+          dispatch({ type: "LOGIN_START" });
 
-        const userData = {
-          email: values.email,
-          password: values.password,
-        };
+          const userData = {
+            email: values.email,
+            password: values.password,
+          };
 
-        const response = await axios.post(
-          "http://localhost:8000/api/auth/login",
-          userData
-        );
-        const user = response.data;
-        console.log(user);
-        dispatch({ type: "LOGIN_SUCCESS", payload: user });
-        navigate("/dashboard");
-        toast.success(response.data.Status);
-      } catch (error) {
-        toast.error(error.response.data.message);
-        dispatch({ type: "LOGIN_FAILURE", payload: error.message });
-      }
-    },
-  });
+          const response = await axios.post(
+            "http://localhost:8000/api/auth/login",
+            userData
+          );
+          const user = response.data;
+          console.log(user);
+          dispatch({ type: "LOGIN_SUCCESS", payload: user });
+          navigate("/dashboard");
+          toast.success(response.data.Status);
+        } catch (error) {
+          toast.error(error.response.data.message);
+          dispatch({ type: "LOGIN_FAILURE", payload: error.message });
+        }
+      },
+    });
 
   // useEffect(() => {
   //   if (user) {
@@ -133,9 +127,7 @@ function Login() {
                </BoldTxt>
             </ForgetPass> */}
 
-          <Btn type="submit">
-            Log in
-          </Btn>
+          <Btn type="submit">Log in</Btn>
 
           <BottomText>
             <BoldTxt>
@@ -146,6 +138,6 @@ function Login() {
       </BottomContainer>
     </Container>
   );
-};
+}
 
 export default Login;

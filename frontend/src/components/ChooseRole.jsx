@@ -113,10 +113,10 @@ function RoleSelection() {
           </CommandButton>
         </ButtonWrapper>
         <BottomText>
-            <BoldTxt>
-              Already have an account? <Link to="/login"> Log in</Link>
-            </BoldTxt>
-          </BottomText>
+          <BoldTxt>
+            Already have an account? <Link to="/login"> Log in</Link>
+          </BoldTxt>
+        </BottomText>
       </BottomContainer>
     </Container>
   );

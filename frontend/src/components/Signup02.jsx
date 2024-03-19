@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.js";
 import { Container, BottomContainer } from "../styles/pageStyles/AuthStyles";
@@ -88,7 +88,7 @@ function Signup02() {
             // console.log(confirm.data.Status);
             console.log(user);
             dispatch({ type: "LOGIN_SUCCESS", payload: user });
-            toast.success("Check your mailbox to confirm email.")
+            toast.success("Check your mailbox to confirm email.");
             navigate("/login");
           }
         } catch (error) {

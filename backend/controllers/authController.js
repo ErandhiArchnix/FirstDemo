@@ -216,9 +216,13 @@ export const login = async (req, res, next) => {
               );
               res.cookie("token", token);
               console.log("Login successful");
-              return res.status(200).json({Status: "Login successful" });
-            } else{
-              return res.status(400).json({ message: "Email not verified. Please check you mailbox." });
+              return res.status(200).json({ Status: "Login successful" });
+            } else {
+              return res
+                .status(400)
+                .json({
+                  message: "Email not verified. Please check you mailbox.",
+                });
             }
           } else {
             return res.status(400).json({ message: "Incorrect password" });
