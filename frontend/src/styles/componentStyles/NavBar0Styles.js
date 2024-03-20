@@ -18,7 +18,7 @@ export const LeftSide = styled.div`
   flex-direction: row;
   justify-content: space-between;
   padding-left: 20px;
-  cursor: pointer;
+  /* cursor: pointer; */
   height: 70px;
 `;
 

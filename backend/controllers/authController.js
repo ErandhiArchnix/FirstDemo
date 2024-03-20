@@ -40,6 +40,10 @@ export const verifyUser = async (req, res, next) => {
   }
 };
 
+export const getToken = async (req, res) => {
+  return res.json({ Status: "Success", user_type: req.user_type });
+};
+
 export const verifyEmail = async (req, res, next) => {
   try {
     const { user_name } = jwt.verify(
@@ -60,10 +64,6 @@ export const verifyEmail = async (req, res, next) => {
     console.log("Error confirming email:", err);
     return res.status(400).json({ error: "Error confirming email" });
   }
-};
-
-export const getToken = async (req, res) => {
-  return res.json({ Status: "Success", user_type: req.user_type });
 };
 
 export const signup = async (req, res, next) => {

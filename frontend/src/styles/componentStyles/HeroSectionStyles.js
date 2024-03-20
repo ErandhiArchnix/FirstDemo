@@ -23,6 +23,7 @@ export const SpanContainer = styled.div`
   align-content: center;
   margin-bottom: 50px;
 `;
+
 export const HLine = styled.div`
   width: 3px;
   background-color: #f0634c;
@@ -40,7 +41,7 @@ export const ButtonWrapper = styled.div`
   justify-content: center;
   align-items: center;
   margin-bottom: 70px;
-`
+`;
 
 export const StyledButton = styled.button`
   width: 200px;

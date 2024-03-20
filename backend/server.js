@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import cookieParser from 'cookie-parser';
 import authRoute from './routes/auth.js';
+import userRoute from './routes/users.js';
 import { dbConfig } from "./database/dbConfig.mjs";
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(cookieParser());
 dbConfig.createDatabaseAndTable();
 
 app.use("/api/auth", authRoute);
+app.use("/api/locations", userRoute);
 
 app.listen(process.env.PORT, () => {
     console.log(`Server running on port ${process.env.PORT}`);
