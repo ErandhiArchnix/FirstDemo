@@ -25,7 +25,7 @@ function RoleSelection() {
 
   const handleRoleSelection = (role) => {
     if (selectedRole === role) {
-      localStorage.removeItem("selectedRole");
+      // localStorage.removeItem("selectedRole");
       setSelectedRole(null);
       dispatch({ type: "UPDATE_SELECTED_ROLE", payload: null });
     } else {
