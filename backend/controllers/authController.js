@@ -25,7 +25,7 @@ export const getUsers = async (req, res) => {
 };
 
 export const verifyUser = async (req, res, next) => {
-  const token = req.cookies.token;
+  const token = req.headers["authorization"];
   if (!token) {
     return res.json({ Error: "Please Login" });
   } else {
@@ -41,8 +41,24 @@ export const verifyUser = async (req, res, next) => {
 };
 
 export const getToken = async (req, res) => {
-  return res.json({ Status: "Success", user_type: req.user_type });
+  try {
+    return res.json({ Status: "Success", user_type: req.user_type });
+  } catch (error) {
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
 };
+
+function updateVerifyUser(user_name, res) {
+  const sql = "UPDATE user SET is_verified = ? WHERE user_name = ?";
+  dbConfig.connection.query(sql, [true, user_name], (err, result) => {
+    if (err) {
+      console.log("Error updating user:", err);
+      return res.status(400).json({ error: "Error updating user" });
+    }
+    console.log("User confirmed:", result);
+    return res.json({ Status: "User Confirmed. Please Login" });
+  });
+}
 
 export const verifyEmail = async (req, res, next) => {
   try {
@@ -50,19 +66,30 @@ export const verifyEmail = async (req, res, next) => {
       req.params.token,
       process.env.EMAIL_SECRET
     );
-    const sql = "UPDATE user SET is_verified = ? WHERE user_name = ?";
-    dbConfig.connection.query(sql, [true, user_name], (err, result) => {
-      if (err) {
-        console.log("Error updating user:", err);
-        return res.status(400).json({ error: "Error updating user" });
-      }
-      console.log("User confirmed:", result);
-      return res.json({ Status: "User Confirmed. Please Login" });
-      // return res.redirect("http://localhost:3000/login");
-    });
+    updateVerifyUsererifyUser(user_name,res);
   } catch (err) {
     console.log("Error confirming email:", err);
     return res.status(400).json({ error: "Error confirming email" });
+  }
+};
+
+export const verifybyOTP = async (req, res, next) => {
+  try {
+    const { user_name, otp } = jwt.verify(
+      req.params.token,
+      process.env.EMAIL_SECRET
+    );
+    console.log(typeof(req.body.otp));
+    console.log(typeof(otp));
+    if (req.body.otp == otp) {
+      updateVerifyUser(user_name, res);
+    } else {
+      console.log("Incorrect OTP");
+      return res.status(400).json({ error: "Incorrect OTP. Check Again" });
+    }
+  } catch (err) {
+    console.log("Error confirming email:", err);
+    return res.status(400).json({ error: "Error Verifying OTP" });
   }
 };
 
@@ -124,35 +151,38 @@ export const signup = async (req, res, next) => {
             }
 
             const user_name = req.body.user_name;
+            const otp = Math.floor(100000 + Math.random() * 900000);
+
             const token = jwt.sign(
               {
-                user_name,
+                user_name: user_name,
+                otp: otp,
               },
               process.env.EMAIL_SECRET,
               { expiresIn: "1d" }
             );
             if (!token) {
               console.log("Error generating token");
-              return res.status(400).jason({ error: "Error generating token" });
+              return res.status(400).json({ error: "Error generating token" });
             } else {
               const url = `http://localhost:3000/confirmation/${token}`;
               transporter.sendMail(
                 {
                   to: req.body.email,
                   subject: "Confirm Email",
-                  html: `Please click this link to confirm your email: <a href="${url}">${url}</a>`,
+                  html: `Your OTP is: <strong>${otp}</strong>. Please click this link to confirm your email: <a href="${url}">${url}</a>`,
                 },
                 (err, info) => {
                   if (err) {
                     console.log("Error sending confirmation email:", err);
                     return res
                       .status(400)
-                      .jason({ error: "Error sending confirmation email" });
+                      .json({ error: "Error sending confirmation email" });
                   } else {
                     console.log("Confirmation email sent:", info);
-                    return res
+                    res
                       .status(200)
-                      .jason({ error: "Confirmation email sent" });
+                      .json({ message: "Confirmation email sent" });
                   }
                 }
               );
@@ -160,7 +190,7 @@ export const signup = async (req, res, next) => {
 
             // Update user data into the database
             const sql =
-              "INSERT INTO user (user_name, email, password, gender, phone_number, region, user_type) VALUES (?)";
+              "INSERT INTO user (user_name, email, password, gender, phone_number, region, user_type, otp) VALUES (?)";
             const values = [
               req.body.user_name,
               req.body.email,
@@ -169,12 +199,13 @@ export const signup = async (req, res, next) => {
               req.body.phone_number,
               req.body.region,
               req.body.user_type,
+              otp,
             ];
 
             dbConfig.connection.query(sql, [values], (err, result) => {
               if (err) return res.json(err);
               console.log("Created user");
-              return res.status(200).json({ Status: "Success" });
+              return res.status(200).json({ token, Status: "Created user" });
             });
           }
         );
@@ -214,15 +245,16 @@ export const login = async (req, res, next) => {
                 process.env.JWT_SECRET,
                 { expiresIn: "1d" }
               );
-              res.cookie("token", token);
+              // res.cookie("token", token);
               console.log("Login successful");
-              return res.status(200).json({ Status: "Login successful" });
-            } else {
+              // res.status(200).json({ Status: "Login successful" });
               return res
-                .status(400)
-                .json({
-                  message: "Email not verified. Please check you mailbox.",
-                });
+                .status(200)
+                .json({ token, Status: "Login Successful" });
+            } else {
+              return res.status(400).json({
+                message: "Email not verified. Please check you mailbox.",
+              });
             }
           } else {
             return res.status(400).json({ message: "Incorrect password" });
@@ -238,6 +270,6 @@ export const login = async (req, res, next) => {
 };
 
 export const logout = (req, res) => {
-  res.clearCookie("token");
+  // res.clearCookie("token");
   return res.status(200).json({ message: "Logout successful" });
 };

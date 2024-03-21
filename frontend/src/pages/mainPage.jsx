@@ -14,7 +14,8 @@ function Main() {
   axios.defaults.withCredentials = true;
 
   useEffect(() => {
-    axios.get("http://localhost:8000/api/auth/").then((res) => {
+    const token = localStorage.getItem('token');
+    axios.get("http://localhost:8000/api/auth/", { headers: { Authorization: token } }).then((res) => {
       if (res.data.Status === "Success") {
         setAuth(true);
         setRole(res.data.user_type);
@@ -35,6 +36,7 @@ function Main() {
       .get("http://localhost:8000/api/auth/logout")
       .then((res) => {
         dispatch({ type: "LOGOUT" });
+        localStorage.removeItem('token');
         navigate("/");
         toast.success(res.data.message);
       })

@@ -88,8 +88,12 @@ function Signup02() {
             // console.log(confirm.data.Status);
             console.log(user);
             dispatch({ type: "LOGIN_SUCCESS", payload: user });
-            toast.success("Check your mailbox to confirm email.");
-            navigate("/login");
+            toast.success("Check your mailbox to confirmation email.");
+            console.log(response.data.Status);
+            localStorage.setItem('emailtoken', response.data.token);
+            const token = localStorage.getItem('emailtoken');
+            navigate(`confirmation/otp/${token}`);
+            localStorage.removeItem('emailtoken');
           }
         } catch (error) {
           if (error.response && error.response.data) {

@@ -61,6 +61,7 @@ function Login() {
           const user = response.data;
           console.log(user);
           dispatch({ type: "LOGIN_SUCCESS", payload: user });
+          localStorage.setItem('token', response.data.token);
           navigate("/dashboard");
           toast.success(response.data.Status);
         } catch (error) {
