@@ -149,7 +149,7 @@ export const Btn = styled.button`
     width: 150px;
   }
 
-  &:disabled{
+  &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
   }
@@ -263,6 +263,18 @@ export const MultiInput = styled.input`
 `;
 
 export const PhoneCover = styled.div`
+  position: relative;
+  width: 100%;
+  i {
+    position: absolute;
+    top: 1rem;
+    left: 0.8rem;
+    opacity: 0.5;
+  }
+  margin-bottom: 15px;
+`;
+
+export const LanguageWrapper = styled.div`
   position: relative;
   width: 100%;
   i {

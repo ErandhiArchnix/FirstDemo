@@ -17,6 +17,7 @@ import {
   SelectWrapper,
   PhoneCover,
   SelectInput,
+  LanguageWrapper,
 } from "../styles/componentStyles/Signup02Styles.js";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -27,6 +28,7 @@ import "react-phone-input-2/lib/style.css";
 import WcIcon from "@mui/icons-material/Wc";
 import SouthAmericaIcon from "@mui/icons-material/SouthAmerica";
 import countries from "country-list";
+import Multiselect from "multiselect-react-dropdown";
 
 function Signup02() {
   const navigate = useNavigate();
@@ -50,10 +52,9 @@ function Signup02() {
       },
       validationSchema: Yup.object({
         gender: Yup.string().required("Gender is required"),
-        telephoneNumber: Yup.string().required("Telephone number is required").matches(
-          /^\+?[1-9]\d{1,14}$/,
-          "Please enter a valid phone number"
-        ),
+        telephoneNumber: Yup.string()
+          .required("Telephone number is required")
+          .matches(/^\+?[1-9]\d{1,14}$/, "Please enter a valid phone number"),
         region: Yup.string().required("Region is required"),
       }),
       onSubmit: async (values) => {
@@ -119,6 +120,22 @@ function Signup02() {
   // useEffect(() => {
   //   dispatch({ type: "LOGOUT" }); // Reset the state when the component unmounts
   // }, [dispatch]);
+  const [options] = useState([
+    { name: "Option1", id: 1 },
+    { name: "Option2", id: 2 },
+    { name: "Option3", id: 3 },
+    { name: "Option4", id: 4 },
+    { name: "Option5", id: 5 },
+  ]);
+  const [selectedValue, setSelectedValue] = useState([]);
+
+  const onSelect = (selectedList, selectedItem) => {
+    setSelectedValue(selectedList);
+  };
+
+  const onRemove = (selectedList, removedItem) => {
+    setSelectedValue(selectedList);
+  };
 
   return (
     <Container>
@@ -158,7 +175,7 @@ function Signup02() {
                 touched.telephoneNumber && errors.telephoneNumber ? "error" : ""
               }
               id="telephoneNumber"
-              name= "telephoneNumber"
+              name="telephoneNumber"
               value={values.telephoneNumber}
               onChange={(value) => {
                 handleChange({
@@ -186,7 +203,6 @@ function Signup02() {
                 boxShadow: "inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2)",
                 transition: "box-shadow 0.2s ease-in",
                 height: "130%",
-                
               }}
               placeholder="Phone Number"
               containerStyle={{
@@ -227,6 +243,63 @@ function Signup02() {
             )}
           </SelectWrapper>
 
+          <LanguageWrapper>
+            <i>
+              <SouthAmericaIcon size={18} />
+            </i>
+            <Multiselect
+              options={options}
+              selectedValues={selectedValue}
+              onSelect={onSelect}
+              onRemove={onRemove}
+              displayValue="name"
+              style={{
+                multiselectContainer: {
+                  width: "100%",
+                  height:"100%",
+                  // boxSizing: "border-box",
+                  padding: "0px 0px 0px 40px",
+                  fontSize: "1rem",
+                  borderRadius: "10px",
+                  marginBottom: "10px",
+                  boxShadow: "inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2)",
+                  transition: "box-shadow 0.2s ease-in",
+                  border: "2px #777c88 solid",
+                },
+                searchBox: {
+                  width: "100%",
+                  // boxSizing: "border-box",
+                  padding: "10px 10px",
+                  fontSize: "1rem",
+                  borderRadius: "10px",
+                  // marginBottom: "10px",
+                  // boxShadow: "inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2)",
+                  // transition: "box-shadow 0.2s ease-in",
+                  // height: "80%",
+                  // border: "2px #777c88 solid",
+                  backgroundColor: "white",
+                },
+                option: {
+                  backgroundColor: "#ffffff",
+                  color: "#333",
+                },
+                chips: {
+                  backgroundColor: "#eb7c7c",
+                  fontSize: "14px",
+                  height: "28px",
+                },
+                inputField: {
+                  // margin: "5px",
+                },
+                optionContainer: {
+                  // To change css for option container
+                  // border: "2px solid",
+                  width: "100%",
+                },
+              }}
+            />
+          </LanguageWrapper>
+
           <TermsAndCoLink>
             <CustomCheck
               type="checkbox"
@@ -246,7 +319,9 @@ function Signup02() {
 
           <ButtonWrapper>
             <Btn onClick={handlePrevious}>Previous</Btn>
-            <Btn type="submit" disabled={!values.agreedToTerms}>Sign Up</Btn>
+            <Btn type="submit" disabled={!values.agreedToTerms}>
+              Sign Up
+            </Btn>
           </ButtonWrapper>
 
           <BottomText>
