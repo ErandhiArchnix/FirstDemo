@@ -86,7 +86,7 @@ export const FormInput = styled.input`
   width: 100%;
   box-sizing: border-box;
   padding: 15px 15px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   border: 2px #777c88 solid;
   border-radius: 10px;
   margin-bottom: 10px;
@@ -148,6 +148,11 @@ export const Btn = styled.button`
   &.google {
     width: 150px;
   }
+
+  &:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 `;
 
 export const BoldTxt = styled.span`
@@ -203,54 +208,30 @@ export const TermsAndCoContainer = styled.div`
   }
 `;
 
-//sent email msg
-export const sentEmailMsgContainer = styled.div``;
-
-//password strength
-export const PasswordStrengthCard = styled.div`
-  border: 1px solid transparent;
-  border-radius: 5px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
-
-  span {
-    display: flex;
-    flex-direction: row;
-    padding: 0 30px 0 0;
-    justify-content: flex-start;
-    align-items: center;
-    font-size: 0.8rem;
-  }
-`;
-
-//verify
-export const CenterAll = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  width: 100%;
-  margin: auto;
-  text-align: center;
-`;
-
 export const SelectWrapper = styled.div`
+  position: relative;
   width: 100%;
+  i {
+    position: absolute;
+    top: 1rem;
+    left: 0.8rem;
+    opacity: 0.5;
+  }
   margin-bottom: 15px;
+`;
 
-  select {
-    width: 100%;
-    font-size: 0.95rem;
-    border: 2px #777c88 solid;
-    border-radius: 10px;
-    background-color: white;
-    transition: border-color 0.3s ease-in-out;
-    padding: 15px 15px;
-
-    &:hover,
-    &:focus {
-      border-color: #050505;
-    }
+export const SelectInput = styled.select`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 15px 40px;
+  font-size: 1rem;
+  border: 2px #777c88 solid;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2);
+  transition: box-shadow 0.2s ease-in;
+  &.error {
+    border: 2px solid #e7195a;
   }
 `;
 
@@ -282,14 +263,13 @@ export const MultiInput = styled.input`
 `;
 
 export const PhoneCover = styled.div`
-  color: #050505;
+  position: relative;
   width: 100%;
-  box-sizing: border-box;
-  padding: 15px 15px;
-  font-size: 0.95rem;
-  border: 2px #777c88 solid;
-  border-radius: 10px;
-  margin-bottom: 10px;
-  box-shadow: inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2);
-  text-align: left;
+  i {
+    position: absolute;
+    top: 1rem;
+    left: 0.8rem;
+    opacity: 0.5;
+  }
+  margin-bottom: 15px;
 `;

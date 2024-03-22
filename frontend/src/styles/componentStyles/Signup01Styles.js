@@ -86,7 +86,7 @@ export const FormInput = styled.input`
   width: 100%;
   box-sizing: border-box;
   padding: 15px 40px;
-  font-size: 0.95rem;
+  font-size: 1rem;
   border: 2px #777c88 solid;
   border-radius: 10px;
   margin-bottom: 10px;

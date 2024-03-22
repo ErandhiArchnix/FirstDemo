@@ -7,8 +7,6 @@ import {
   Form,
   Title,
   FirstMsg,
-  Region,
-  FormInput,
   ErrorMsg,
   TermsAndCoLink,
   CustomCheck,
@@ -18,6 +16,7 @@ import {
   ButtonWrapper,
   SelectWrapper,
   PhoneCover,
+  SelectInput,
 } from "../styles/componentStyles/Signup02Styles.js";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -25,23 +24,17 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import WcIcon from "@mui/icons-material/Wc";
+import SouthAmericaIcon from "@mui/icons-material/SouthAmerica";
+import countries from "country-list";
 
 function Signup02() {
   const navigate = useNavigate();
   const { dispatch, formData } = useContext(AuthContext); // Access the dispatch function from the AuthContext
 
-  const [phoneNumber, setPhoneNumber] = useState("");
-  const [valid, setValid] = useState(true);
-
-  const handleTPChange = (value) => {
-    setPhoneNumber(value);
-    setValid(validatePhoneNumber(value));
-  };
-
-  const validatePhoneNumber = (phoneNumber) => {
-    const phoneNumberPattern = /^\+?[1-9]\d{1,14}$/;
-    return phoneNumberPattern.test(phoneNumber);
-  };
+  const countryOptions = countries
+    .getNames()
+    .map((country) => <option value={country}>{country}</option>);
 
   const { values, errors, handleChange, handleBlur, touched, handleSubmit } =
     useFormik({
@@ -51,12 +44,16 @@ function Signup02() {
         password: formData[1]?.password || "",
         confirmPassword: formData[1]?.confirmPassword || "",
         gender: formData[2]?.gender || "",
-        telephoneNumber: phoneNumber || "",
+        telephoneNumber: formData[2]?.telephoneNumber || "",
         region: formData[2]?.region || "",
         agreedToTerms: false,
       },
       validationSchema: Yup.object({
         gender: Yup.string().required("Gender is required"),
+        telephoneNumber: Yup.string().required("Telephone number is required").matches(
+          /^\+?[1-9]\d{1,14}$/,
+          "Please enter a valid phone number"
+        ),
         region: Yup.string().required("Region is required"),
       }),
       onSubmit: async (values) => {
@@ -69,7 +66,7 @@ function Signup02() {
           email: values.email,
           password: values.password,
           gender: values.gender,
-          phone_number: phoneNumber,
+          phone_number: values.telephoneNumber,
           region: values.region,
           user_type: localStorage.getItem("selectedRole"),
         };
@@ -90,10 +87,10 @@ function Signup02() {
             dispatch({ type: "LOGIN_SUCCESS", payload: user });
             toast.success("Check your mailbox to confirmation email.");
             console.log(response.data.Status);
-            localStorage.setItem('emailtoken', response.data.token);
-            const token = localStorage.getItem('emailtoken');
+            localStorage.setItem("emailtoken", response.data.token);
+            const token = localStorage.getItem("emailtoken");
             navigate(`confirmation/otp/${token}`);
-            localStorage.removeItem('emailtoken');
+            localStorage.removeItem("emailtoken");
           }
         } catch (error) {
           if (error.response && error.response.data) {
@@ -111,7 +108,7 @@ function Signup02() {
   const handlePrevious = () => {
     console.log(formData[2]?.gender);
     console.log(formData[1]?.name);
-    console.log(phoneNumber);
+    console.log(formData[2]?.telephoneNumber);
     dispatch({ type: "PREVIOUS_STEP" });
     dispatch({
       type: "UPDATE_FORM_DATA",
@@ -134,52 +131,101 @@ function Signup02() {
           </FirstMsg>
 
           <SelectWrapper>
-            <select
+            <i>
+              <WcIcon size={18} />
+            </i>
+            <SelectInput
               id="gender"
               name="gender"
               placeholder="Gender"
               value={values.gender}
               onChange={handleChange}
               onBlur={handleBlur}
+              className={touched.gender && errors.gender ? "error" : ""}
             >
               <option value="">Gender</option>
               <option value="male">Male</option>
               <option value="female">Female</option>
-            </select>
+            </SelectInput>
             {touched.gender && errors.gender && (
               <ErrorMsg>{errors.gender}</ErrorMsg>
             )}
           </SelectWrapper>
 
           <PhoneCover>
-            Phone Number:
             <PhoneInput
-              country={"us"}
               className={
                 touched.telephoneNumber && errors.telephoneNumber ? "error" : ""
               }
+              id="telephoneNumber"
+              name= "telephoneNumber"
               value={values.telephoneNumber}
-              onChange={handleTPChange}
-              onBlur={handleBlur}
+              onChange={(value) => {
+                handleChange({
+                  target: {
+                    name: "telephoneNumber",
+                    value: value,
+                  },
+                });
+              }}
+              onBlur={(value) => {
+                handleBlur({
+                  target: {
+                    name: "telephoneNumber",
+                    value: value,
+                  },
+                });
+              }}
+              inputStyle={{
+                width: "100%",
+                boxSizing: "border-box",
+                padding: "15px 60px",
+                fontSize: "1rem",
+                borderRadius: "10px",
+                marginBottom: "10px",
+                boxShadow: "inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2)",
+                transition: "box-shadow 0.2s ease-in",
+                height: "130%",
+                
+              }}
+              placeholder="Phone Number"
+              containerStyle={{
+                width: "100%",
+                borderRadius: "10px",
+                border:
+                  touched.telephoneNumber && errors.telephoneNumber
+                    ? "2px solid #e7195a" // Apply error border style
+                    : "2px #777c88 solid",
+              }}
+              buttonStyle={{
+                borderRadius: "10px",
+              }}
             />
-            {!valid && <ErrorMsg>Please enter a valid phone number.</ErrorMsg>}
+            {touched.telephoneNumber && errors.telephoneNumber && (
+              <ErrorMsg>{errors.telephoneNumber}</ErrorMsg>
+            )}
           </PhoneCover>
 
-          <Region>
-            <FormInput
-              type="text"
+          <SelectWrapper>
+            <i>
+              <SouthAmericaIcon size={18} />
+            </i>
+            <SelectInput
+              className={touched.region && errors.region ? "error" : ""}
               id="region"
               name="region"
-              className={touched.region && errors.region ? "error" : ""}
               placeholder="Region"
               value={values.region}
               onChange={handleChange}
               onBlur={handleBlur}
-            />
+            >
+              <option value="">Region</option>
+              {countryOptions}
+            </SelectInput>
             {touched.region && errors.region && (
               <ErrorMsg>{errors.region}</ErrorMsg>
             )}
-          </Region>
+          </SelectWrapper>
 
           <TermsAndCoLink>
             <CustomCheck
@@ -200,7 +246,7 @@ function Signup02() {
 
           <ButtonWrapper>
             <Btn onClick={handlePrevious}>Previous</Btn>
-            <Btn type="submit">Sign Up</Btn>
+            <Btn type="submit" disabled={!values.agreedToTerms}>Sign Up</Btn>
           </ButtonWrapper>
 
           <BottomText>
