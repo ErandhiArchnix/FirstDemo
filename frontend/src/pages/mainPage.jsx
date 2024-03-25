@@ -5,6 +5,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import GuideDashboard from "../components/GuideDashboard";
 import TravelerDashboard from "../components/TravelerDashboard";
+import Navbar from "../components/NavBar";
 
 function Main() {
   const { dispatch } = useContext(AuthContext);
@@ -47,6 +48,7 @@ function Main() {
     <div>
       {auth ? (
         <div>
+          <Navbar/>
           <h1>Dashboard</h1>
           <button onClick={handleLogout}>Logout</button>
           {role === "traveler" && <TravelerDashboard/>}

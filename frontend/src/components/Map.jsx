@@ -30,8 +30,8 @@ function HomeMap() {
         <LoadScript googleMapsApiKey="AIzaSyAg8TOi8OhdM1NxVymss1CEqZD3VRT342w">
           <GoogleMap
             mapContainerStyle={{ width: "100%", height: "600px" }}
-            center={{ lat: 7.2906, lng: 80.6337 }}
-            zoom={8}
+            center={{ lat: 0, lng: 0 }}
+            zoom={2}
           >
              {locations.map(marker => (
           <Marker
