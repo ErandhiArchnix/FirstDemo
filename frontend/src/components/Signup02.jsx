@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.js";
 import { Container, BottomContainer } from "../styles/pageStyles/AuthStyles";
@@ -29,14 +29,13 @@ import WcIcon from "@mui/icons-material/Wc";
 import SouthAmericaIcon from "@mui/icons-material/SouthAmerica";
 import countries from "country-list";
 import Multiselect from "multiselect-react-dropdown";
+const languagesIs = require('@cospired/i18n-iso-languages');
+languagesIs.registerLocale(require("@cospired/i18n-iso-languages/langs/en.json"));
 
 function Signup02() {
   const navigate = useNavigate();
   const { dispatch, formData } = useContext(AuthContext); // Access the dispatch function from the AuthContext
-
-  const countryOptions = countries
-    .getNames()
-    .map((country) => <option value={country}>{country}</option>);
+  const [options, setOptions] = useState([]);
 
   const { values, errors, handleChange, handleBlur, touched, handleSubmit } =
     useFormik({
@@ -48,6 +47,7 @@ function Signup02() {
         gender: formData[2]?.gender || "",
         telephoneNumber: formData[2]?.telephoneNumber || "",
         region: formData[2]?.region || "",
+        languages: formData[2]?.languages || [],
         agreedToTerms: false,
       },
       validationSchema: Yup.object({
@@ -62,6 +62,8 @@ function Signup02() {
           return toast.error("Please accept terms and conditions");
         }
 
+        const selectedLanguageNames = values.languages.map(language => language.name);
+
         const userData = {
           user_name: values.name,
           email: values.email,
@@ -69,6 +71,7 @@ function Signup02() {
           gender: values.gender,
           phone_number: values.telephoneNumber,
           region: values.region,
+          languages: selectedLanguageNames,
           user_type: localStorage.getItem("selectedRole"),
         };
 
@@ -87,6 +90,7 @@ function Signup02() {
             console.log(user);
             dispatch({ type: "LOGIN_SUCCESS", payload: user });
             toast.success("Check your mailbox to confirmation email.");
+            console.log(selectedLanguageNames);
             console.log(response.data.Status);
             localStorage.setItem("emailtoken", response.data.token);
             const token = localStorage.getItem("emailtoken");
@@ -110,6 +114,7 @@ function Signup02() {
     console.log(formData[2]?.gender);
     console.log(formData[1]?.name);
     console.log(formData[2]?.telephoneNumber);
+    console.log(formData[2]?.languages);
     dispatch({ type: "PREVIOUS_STEP" });
     dispatch({
       type: "UPDATE_FORM_DATA",
@@ -120,21 +125,26 @@ function Signup02() {
   // useEffect(() => {
   //   dispatch({ type: "LOGOUT" }); // Reset the state when the component unmounts
   // }, [dispatch]);
-  const [options] = useState([
-    { name: "Option1", id: 1 },
-    { name: "Option2", id: 2 },
-    { name: "Option3", id: 3 },
-    { name: "Option4", id: 4 },
-    { name: "Option5", id: 5 },
-  ]);
-  const [selectedValue, setSelectedValue] = useState([]);
+
+  const countryOptions = countries
+    .getNames()
+    .map((country) => <option value={country}>{country}</option>);
+
+  useEffect(() => {
+    const languageNames = languagesIs.getNames("en");
+    const optionsArray = Object.keys(languageNames).map((code, index) => ({
+      name: languageNames[code],
+      id: index + 1,
+    }));
+    setOptions(optionsArray);
+  }, []);
 
   const onSelect = (selectedList, selectedItem) => {
-    setSelectedValue(selectedList);
+    handleChange({ target: { name: "languages", value: selectedList } });
   };
 
   const onRemove = (selectedList, removedItem) => {
-    setSelectedValue(selectedList);
+    handleChange({ target: { name: "languages", value: selectedList } });
   };
 
   return (
@@ -210,7 +220,7 @@ function Signup02() {
                 borderRadius: "10px",
                 border:
                   touched.telephoneNumber && errors.telephoneNumber
-                    ? "2px solid #e7195a" // Apply error border style
+                    ? "2px solid #e7195a" 
                     : "2px #777c88 solid",
               }}
               buttonStyle={{
@@ -249,15 +259,21 @@ function Signup02() {
             </i>
             <Multiselect
               options={options}
-              selectedValues={selectedValue}
+              selectedValues={values.languages}
               onSelect={onSelect}
               onRemove={onRemove}
               displayValue="name"
+              className={touched.languages && errors.languages ? "error" : ""}
+              id="languages"
+              name="languages"
+              placeholder="Languages"
+              value={values.languages}
+              onChange={handleChange}
+              onBlur={handleBlur}
               style={{
                 multiselectContainer: {
                   width: "100%",
                   height:"100%",
-                  // boxSizing: "border-box",
                   padding: "0px 0px 0px 40px",
                   fontSize: "1rem",
                   borderRadius: "10px",
@@ -268,15 +284,9 @@ function Signup02() {
                 },
                 searchBox: {
                   width: "100%",
-                  // boxSizing: "border-box",
                   padding: "10px 10px",
                   fontSize: "1rem",
                   borderRadius: "10px",
-                  // marginBottom: "10px",
-                  // boxShadow: "inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2)",
-                  // transition: "box-shadow 0.2s ease-in",
-                  // height: "80%",
-                  // border: "2px #777c88 solid",
                   backgroundColor: "white",
                 },
                 option: {
@@ -288,12 +298,7 @@ function Signup02() {
                   fontSize: "14px",
                   height: "28px",
                 },
-                inputField: {
-                  // margin: "5px",
-                },
                 optionContainer: {
-                  // To change css for option container
-                  // border: "2px solid",
                   width: "100%",
                 },
               }}

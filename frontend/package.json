@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@cospired/i18n-iso-languages": "^4.2.0",
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.14",
@@ -16,6 +17,7 @@
     "country-list": "^2.3.0",
     "dotenv": "^16.4.5",
     "formik": "^2.4.5",
+    "language-list": "^0.0.3",
     "multiselect-react-dropdown": "^2.0.25",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.1",

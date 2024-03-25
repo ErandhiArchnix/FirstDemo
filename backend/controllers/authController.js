@@ -66,7 +66,7 @@ export const verifyEmail = async (req, res, next) => {
       req.params.token,
       process.env.EMAIL_SECRET
     );
-    updateVerifyUsererifyUser(user_name,res);
+    updateVerifyUser(user_name, res);
   } catch (err) {
     console.log("Error confirming email:", err);
     return res.status(400).json({ error: "Error confirming email" });
@@ -79,8 +79,8 @@ export const verifybyOTP = async (req, res, next) => {
       req.params.token,
       process.env.EMAIL_SECRET
     );
-    console.log(typeof(req.body.otp));
-    console.log(typeof(otp));
+    console.log(typeof req.body.otp);
+    console.log(typeof otp);
     if (req.body.otp == otp) {
       updateVerifyUser(user_name, res);
     } else {
@@ -191,6 +191,7 @@ export const signup = async (req, res, next) => {
             // Update user data into the database
             const sql =
               "INSERT INTO user (user_name, email, password, gender, phone_number, region, user_type, otp) VALUES (?)";
+
             const values = [
               req.body.user_name,
               req.body.email,
@@ -205,7 +206,86 @@ export const signup = async (req, res, next) => {
             dbConfig.connection.query(sql, [values], (err, result) => {
               if (err) return res.json(err);
               console.log("Created user");
-              return res.status(200).json({ token, Status: "Created user" });
+              const userId = result.insertId;
+
+              const languages =
+                "INSERT INTO languages (language_name) VALUES (?)";
+
+              const userLanguages =
+                "INSERT INTO user_languages (user_id, language_id) VALUES (?, ?)";
+
+              Promise.all(
+                req.body.languages.map((language) => {
+                  return new Promise((resolve, reject) => {
+                    const languageExist =
+                      "SELECT language_id FROM languages WHERE language_name =?";
+
+                    dbConfig.connection.query(
+                      languageExist,
+                      [language],
+                      (langErr, langResults) => {
+                        if (langErr) {
+                          console.error(
+                            "Error checking language existence:",
+                            emailErr
+                          );
+                          return next(
+                            createError(
+                              500,
+                              "Error checking language existence"
+                            )
+                          );
+                        }
+                        if (langResults.length > 0) {
+                          console.log(langResults[0].language_id)
+                          dbConfig.connection.query(
+                            userLanguages,
+                            [userId, langResults[0].language_id], // Assuming language_id is auto-incremented
+                            (err, res) => {
+                              if (err) {
+                                reject(err);
+                              } else {
+                                resolve();
+                              }
+                            }
+                          );
+                        }
+
+                        dbConfig.connection.query(
+                          languages,
+                          [language],
+                          (err, languageresult) => {
+                            if (err) {
+                              reject(err);
+                            } else {
+                              console.log("Language Added");
+                              dbConfig.connection.query(
+                                userLanguages,
+                                [userId, languageresult.insertId], // Assuming language_id is auto-incremented
+                                (err, res) => {
+                                  if (err) {
+                                    reject(err);
+                                  } else {
+                                    resolve();
+                                  }
+                                }
+                              );
+                            }
+                          }
+                        );
+                      }
+                    );
+                  });
+                })
+              )
+                .then(() => {
+                  res
+                    .status(200)
+                    .json({ token, Status: "User and Languages Added" });
+                })
+                .catch((error) => {
+                  res.status(500).json(error);
+                });
             });
           }
         );
