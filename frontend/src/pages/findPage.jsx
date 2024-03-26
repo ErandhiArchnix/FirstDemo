@@ -9,14 +9,13 @@ import Navbar from "../components/NavBar";
 import Sidebar from "../components/SideBar";
 import { Container } from "../styles/pageStyles/MainPageStyles";
 
-function Main() {
+function Find() {
   const { dispatch } = useContext(AuthContext);
   const navigate = useNavigate();
   const [auth, setAuth] = useState(false);
   const [role, setRole] = useState("");
   axios.defaults.withCredentials = true;
-  const [query, setQuery] = useState("Dashboard");
-  const [id, setId] = useState("");
+  const [query, setQuery] = useState("Find");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -28,9 +27,7 @@ function Main() {
         if (res.data.Status === "Success") {
           setAuth(true);
           setRole(res.data.user_type);
-          setId(res.data.user_id);
           console.log(res.data.Status);
-          console.log(res.data.user_id);
           console.log(role);
           return;
         } else {
@@ -60,9 +57,9 @@ function Main() {
         <div>
           <Sidebar setQuery={setQuery} />
           {console.log(query)}
-          <Navbar query={query} role={role} id={id} />
+          <Navbar query={query} />
           <Container>
-            <h1>Dashboard</h1>
+            <h1>FindPage</h1>
             {/* <button onClick={handleLogout}>Logout</button> */}
             {role === "traveler" && <TravelerDashboard />}
             {role === "guide" && <GuideDashboard />}
@@ -75,4 +72,4 @@ function Main() {
   );
 }
 
-export default Main; // Updated component name to start with an uppercase letter
+export default Find

@@ -34,6 +34,7 @@ export const verifyUser = async (req, res, next) => {
         return res.json({ Error: "Invalid Token" });
       } else {
         req.user_type = decoded.user_type;
+        req.user_id = decoded.user_id;
         next();
       }
     });
@@ -42,7 +43,7 @@ export const verifyUser = async (req, res, next) => {
 
 export const getToken = async (req, res) => {
   try {
-    return res.json({ Status: "Success", user_type: req.user_type });
+    return res.json({ Status: "Success", user_type: req.user_type, user_id: req.user_id});
   } catch (error) {
     return res.status(500).json({ error: "Internal Server Error" });
   }
@@ -315,11 +316,11 @@ export const login = async (req, res, next) => {
           if (err) return res.json(err);
           if (result) {
             if (data[0].is_verified === 1) {
-              const id = data[0].user_id;
+              const user_id = data[0].user_id;
               const user_type = data[0].user_type;
               const token = jwt.sign(
                 {
-                  id,
+                  user_id,
                   user_type,
                 },
                 process.env.JWT_SECRET,

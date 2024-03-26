@@ -12,8 +12,9 @@ function HomeMap() {
   const [selectedLocation, setSelectedLocation] = useState(null);
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/locations/getAllLocations')
+    axios.get('http://localhost:8000/api/user/getAllLocations')
       .then(response => {
+        console.log(response.data);
         setLocations(response.data);
       })
       .catch(error => {
