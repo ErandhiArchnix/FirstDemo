@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -9,13 +8,13 @@ import Navbar from "../components/NavBar";
 import Sidebar from "../components/SideBar";
 import { Container } from "../styles/pageStyles/MainPageStyles";
 
-function Timeline() {
-  const { dispatch } = useContext(AuthContext);
+function Main() {
   const navigate = useNavigate();
   const [auth, setAuth] = useState(false);
   const [role, setRole] = useState("");
   axios.defaults.withCredentials = true;
   const [query, setQuery] = useState("Timeline");
+  const [id, setId] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -27,7 +26,9 @@ function Timeline() {
         if (res.data.Status === "Success") {
           setAuth(true);
           setRole(res.data.user_type);
+          setId(res.data.user_id);
           console.log(res.data.Status);
+          console.log(res.data.user_id);
           console.log(role);
           return;
         } else {
@@ -39,28 +40,15 @@ function Timeline() {
       });
   });
 
-  const handleLogout = () => {
-    axios
-      .get("http://localhost:8000/api/auth/logout")
-      .then((res) => {
-        dispatch({ type: "LOGOUT" });
-        localStorage.removeItem("token");
-        navigate("/");
-        toast.success(res.data.message);
-      })
-      .catch((err) => console.log(err));
-  };
-
   return (
     <div>
       {auth ? (
         <div>
           <Sidebar setQuery={setQuery} />
           {console.log(query)}
-          <Navbar query={query} />
+          <Navbar query={query} role={role} id={id} />
           <Container>
             <h1>Timeline</h1>
-            {/* <button onClick={handleLogout}>Logout</button> */}
             {role === "traveler" && <TravelerDashboard />}
             {role === "guide" && <GuideDashboard />}
           </Container>
@@ -72,4 +60,4 @@ function Timeline() {
   );
 }
 
-export default Timeline; // Updated component name to start with an uppercase letter
+export default Main;

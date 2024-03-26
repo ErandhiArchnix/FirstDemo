@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -10,7 +9,6 @@ import Sidebar from "../components/SideBar";
 import { Container } from "../styles/pageStyles/MainPageStyles";
 
 function Main() {
-  const { dispatch } = useContext(AuthContext);
   const navigate = useNavigate();
   const [auth, setAuth] = useState(false);
   const [role, setRole] = useState("");
@@ -41,18 +39,6 @@ function Main() {
         }
       });
   });
-
-  const handleLogout = () => {
-    axios
-      .get("http://localhost:8000/api/auth/logout")
-      .then((res) => {
-        dispatch({ type: "LOGOUT" });
-        localStorage.removeItem("token");
-        navigate("/");
-        toast.success(res.data.message);
-      })
-      .catch((err) => console.log(err));
-  };
 
   return (
     <div>

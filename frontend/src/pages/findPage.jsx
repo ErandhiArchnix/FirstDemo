@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../context/AuthContext";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -7,15 +6,16 @@ import GuideDashboard from "../components/GuideDashboard";
 import TravelerDashboard from "../components/TravelerDashboard";
 import Navbar from "../components/NavBar";
 import Sidebar from "../components/SideBar";
+import LocationUpdateButton from "../components/LocationUpdateButton";
 import { Container } from "../styles/pageStyles/MainPageStyles";
 
-function Find() {
-  const { dispatch } = useContext(AuthContext);
+function Main() {
   const navigate = useNavigate();
   const [auth, setAuth] = useState(false);
   const [role, setRole] = useState("");
   axios.defaults.withCredentials = true;
   const [query, setQuery] = useState("Find");
+  const [id, setId] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -27,7 +27,9 @@ function Find() {
         if (res.data.Status === "Success") {
           setAuth(true);
           setRole(res.data.user_type);
+          setId(res.data.user_id);
           console.log(res.data.Status);
+          console.log(res.data.user_id);
           console.log(role);
           return;
         } else {
@@ -39,31 +41,20 @@ function Find() {
       });
   });
 
-  const handleLogout = () => {
-    axios
-      .get("http://localhost:8000/api/auth/logout")
-      .then((res) => {
-        dispatch({ type: "LOGOUT" });
-        localStorage.removeItem("token");
-        navigate("/");
-        toast.success(res.data.message);
-      })
-      .catch((err) => console.log(err));
-  };
-
   return (
     <div>
       {auth ? (
         <div>
           <Sidebar setQuery={setQuery} />
           {console.log(query)}
-          <Navbar query={query} />
+          <Navbar query={query} role={role} id={id} />
           <Container>
-            <h1>FindPage</h1>
+            <h1>Find Page</h1>
             {/* <button onClick={handleLogout}>Logout</button> */}
             {role === "traveler" && <TravelerDashboard />}
             {role === "guide" && <GuideDashboard />}
           </Container>
+          <LocationUpdateButton />
         </div>
       ) : (
         <div></div>
@@ -72,4 +63,4 @@ function Find() {
   );
 }
 
-export default Find
+export default Main; // Updated component name to start with an uppercase letter
