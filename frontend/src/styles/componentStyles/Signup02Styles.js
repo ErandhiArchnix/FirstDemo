@@ -106,18 +106,6 @@ export const FormInput = styled.input`
   }
 `;
 
-export const Region = styled.div`
-  position: relative;
-  width: 100%;
-  i {
-    position: absolute;
-    top: 1rem;
-    left: 0.8rem;
-    opacity: 0.5;
-  }
-  margin-bottom: 15px;
-`;
-
 export const CustomCheck = styled.input`
   accent-color: #f0634c;
 `;
@@ -232,33 +220,6 @@ export const SelectInput = styled.select`
   transition: box-shadow 0.2s ease-in;
   &.error {
     border: 2px solid #e7195a;
-  }
-`;
-
-export const MultiInputWrapper = styled.div`
-  width: 100%;
-  margin-bottom: 15px;
-
-  label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 0.95rem;
-    color: #777c88;
-  }
-`;
-
-export const MultiInput = styled.input`
-  width: 100%;
-  padding: 15px;
-  font-size: 0.95rem;
-  border: 2px solid #777c88;
-  border-radius: 10px;
-  background-color: white;
-  transition: border-color 0.3s ease-in-out;
-
-  &:hover,
-  &:focus {
-    border-color: #f0634c;
   }
 `;
 

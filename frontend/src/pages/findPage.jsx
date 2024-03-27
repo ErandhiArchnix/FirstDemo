@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import GuideDashboard from "../components/GuideDashboard";
-import TravelerDashboard from "../components/TravelerDashboard";
+import TravelerFindComponent from "../components/TravelerFindComponent";
 import Navbar from "../components/NavBar";
 import Sidebar from "../components/SideBar";
 import LocationUpdateButton from "../components/LocationUpdateButton";
@@ -49,12 +49,12 @@ function Main() {
           {console.log(query)}
           <Navbar query={query} role={role} id={id} />
           <Container>
-            <h1>Find Page</h1>
+            {/* <h1>Find Page</h1> */}
             {/* <button onClick={handleLogout}>Logout</button> */}
-            {role === "traveler" && <TravelerDashboard />}
+            {role === "traveler" && <TravelerFindComponent />}
             {role === "guide" && <GuideDashboard />}
           </Container>
-          <LocationUpdateButton />
+          <LocationUpdateButton id={id}/>
         </div>
       ) : (
         <div></div>

@@ -7,6 +7,7 @@ import TravelerDashboard from "../components/TravelerDashboard";
 import Navbar from "../components/NavBar";
 import Sidebar from "../components/SideBar";
 import { Container } from "../styles/pageStyles/MainPageStyles";
+import LocationUpdateButton from "../components/LocationUpdateButton";
 
 function Main() {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ function Main() {
             {role === "traveler" && <TravelerDashboard />}
             {role === "guide" && <GuideDashboard />}
           </Container>
+          <LocationUpdateButton id={id}/>
         </div>
       ) : (
         <div></div>

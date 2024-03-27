@@ -30,6 +30,7 @@ export default function Navbar({ query, role, id }) {
   axios
     .get(`http://localhost:8000/api/user/getUser/${id}`)
     .then((res) => {
+      console.log(res.data[0]);
       setUserName(res.data[0].user_name);
     })
     .catch((err) => console.log(err));

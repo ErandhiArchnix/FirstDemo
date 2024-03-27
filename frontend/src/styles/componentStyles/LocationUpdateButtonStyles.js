@@ -56,6 +56,8 @@ export const Modal = styled.div`
 `;
 
 export const ModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -68,15 +70,35 @@ export const ModalContent = styled.div`
 `;
 
 export const MapContainer = styled.div`
-  position: absolute;
+  /* position: absolute; */
   height: 450px;
   width: 500px;
-  margin: 50px 50px 100px 50px;
+  margin: 50px 50px 30px 50px;
 `;
 
 export const CloseButton = styled.span`
   position: absolute;
-  top: 10px;
-  right: 15px;
+  top: 5px;
+  right: 20px;
   cursor: pointer;
+  font-weight: 600;
+  font-size: 30px;
+`;
+
+export const SaveButtton = styled.button`
+  width: 200px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0634c;
+  border-radius: 20px;
+  border: #f0634c;
+  color: #ffff;
+  margin-left: 200px;
+  font-weight: 600;
+
+  &:hover {
+    color: black;
+  }
 `;
