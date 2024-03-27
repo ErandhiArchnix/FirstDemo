@@ -163,23 +163,55 @@ function TravelerFindPage() {
               )}
             </SelectWrapper>
 
-            <SelectWrapper>
-              <SelectInput
-                className={touched.region && errors.region ? "error" : ""}
+            <LanguageWrapper>
+              <Multiselect
+                options={options}
+                selectedValues={values.languages}
+                onSelect={onSelect}
+                onRemove={onRemove}
+                displayValue="name"
+                className={touched.languages && errors.languages ? "error" : ""}
                 id="region"
                 name="region"
                 placeholder="Region"
-                value={values.region}
+                value={values.languages}
                 onChange={handleChange}
                 onBlur={handleBlur}
-              >
-                <option value="">Region</option>
-                {countryOptions}
-              </SelectInput>
-              {touched.region && errors.region && (
-                <ErrorMsg>{errors.region}</ErrorMsg>
-              )}
-            </SelectWrapper>
+                style={{
+                  multiselectContainer: {
+                    width: "100%",
+                    height: "100%",
+                    padding: "0px 0px 0px 0px",
+                    fontSize: "1rem",
+                    borderRadius: "10px",
+                    marginBottom: "10px",
+                    boxShadow:
+                      "inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2)",
+                    transition: "box-shadow 0.2s ease-in",
+                    border: "2px #777c88 solid",
+                  },
+                  searchBox: {
+                    width: "100%",
+                    padding: "10px 10px",
+                    fontSize: "1rem",
+                    borderRadius: "10px",
+                    backgroundColor: "white",
+                  },
+                  option: {
+                    backgroundColor: "#ffffff",
+                    color: "#333",
+                  },
+                  chips: {
+                    backgroundColor: "#eb7c7c",
+                    fontSize: "14px",
+                    height: "28px",
+                  },
+                  optionContainer: {
+                    width: "100%",
+                  },
+                }}
+              />
+            </LanguageWrapper>
 
             <LanguageWrapper>
               <Multiselect
@@ -266,9 +298,9 @@ function TravelerFindPage() {
                 onRemove={onRemove}
                 displayValue="name"
                 className={touched.languages && errors.languages ? "error" : ""}
-                id="languages"
-                name="languages"
-                placeholder="Languages"
+                id="specialties"
+                name="specialties"
+                placeholder="Specialties"
                 value={values.languages}
                 onChange={handleChange}
                 onBlur={handleBlur}

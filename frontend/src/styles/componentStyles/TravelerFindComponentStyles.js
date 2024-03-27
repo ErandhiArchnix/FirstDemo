@@ -62,10 +62,10 @@ export const Form = styled.form`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-width: 550px;
-  min-width: 300px;
-  /* width: 65%;
-  height: 60%; */
+  /* max-width: 550px;
+  min-width: 300px; */
+  width: 75%;
+  height: 60%;
   margin: 0% auto;
   padding: 5px 5%;
 
