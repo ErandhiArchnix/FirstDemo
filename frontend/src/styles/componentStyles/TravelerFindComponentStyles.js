@@ -64,7 +64,7 @@ export const Form = styled.form`
   justify-content: center;
   /* max-width: 550px;
   min-width: 300px; */
-  width: 75%;
+  width: 90%;
   height: 60%;
   margin: 0% auto;
   padding: 5px 5%;
@@ -140,7 +140,7 @@ export const SelectInput = styled.select`
   }
 `;
 
-export const LanguageWrapper = styled.div`
+export const Wrapper = styled.div`
   position: relative;
   width: 100%;
   i {

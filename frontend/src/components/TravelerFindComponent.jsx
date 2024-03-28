@@ -11,7 +11,7 @@ import {
   FirstMsg,
   Btn,
   ButtonWrapper,
-  LanguageWrapper,
+  Wrapper,
   SelectWrapper,
   SelectInput,
   ErrorMsg,
@@ -24,9 +24,6 @@ import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-phone-input-2/lib/style.css";
-import WcIcon from "@mui/icons-material/Wc";
-import SouthAmericaIcon from "@mui/icons-material/SouthAmerica";
-import countries from "country-list";
 import Multiselect from "multiselect-react-dropdown";
 import NumericInput from "react-numeric-input";
 import { SiZig } from "react-icons/si";
@@ -38,103 +35,118 @@ languagesIs.registerLocale(
 
 function TravelerFindPage() {
   const navigate = useNavigate();
-  const { dispatch, formData } = useContext(AuthContext); // Access the dispatch function from the AuthContext
-  const [options, setOptions] = useState([]);
+  const { dispatch } = useContext(AuthContext); // Access the dispatch function from the AuthContext
+  const [languages, setLanguages] = useState([]);
+  const [regions, setRegions] = useState([]);
+  const [specialties, setSpecialties] = useState([]);
 
   const { values, errors, handleChange, handleBlur, touched, handleSubmit } =
     useFormik({
       initialValues: {
-        name: formData[1]?.name || "",
-        email: formData[1]?.email || "",
-        password: formData[1]?.password || "",
-        confirmPassword: formData[1]?.confirmPassword || "",
-        gender: formData[2]?.gender || "",
-        telephoneNumber: formData[2]?.telephoneNumber || "",
-        region: formData[2]?.region || "",
-        languages: formData[2]?.languages || [],
-        agreedToTerms: false,
+        gender: "",
+        region: [],
+        languages: [],
+        range: null,
+        specialties: [],
       },
-      validationSchema: Yup.object({
-        gender: Yup.string().required("Gender is required"),
-        telephoneNumber: Yup.string()
-          .required("Telephone number is required")
-          .matches(/^\+?[1-9]\d{1,14}$/, "Please enter a valid phone number"),
-        region: Yup.string().required("Region is required"),
-      }),
       onSubmit: async (values) => {
-        if (values.agreedToTerms === false) {
-          return toast.error("Please accept terms and conditions");
-        }
-
         const selectedLanguageNames = values.languages.map(
           (language) => language.name
         );
 
-        const userData = {
-          user_name: values.name,
-          email: values.email,
-          password: values.password,
+        const selectedRegionNames = values.region.map((region) => region.name);
+
+        const selectedSpecialtyNames = values.languages.map(
+          (language) => language.name
+        );
+        const token = localStorage.getItem("token");
+
+        const filterData = {
           gender: values.gender,
-          phone_number: values.telephoneNumber,
-          region: values.region,
+          region: selectedRegionNames,
           languages: selectedLanguageNames,
-          user_type: localStorage.getItem("selectedRole"),
+          range: values.range,
+          specialties: selectedSpecialtyNames,
+          headers: { Authorization: token },
         };
 
-        console.log(userData);
-
-        try {
-          const response = await axios.post(
-            "http://localhost:8000/api/auth/signup",
-            userData
-          );
-          const user = response.data;
-          console.log("Sent to backend");
-          console.log(user);
-          if (user) {
-            // console.log(confirm.data.Status);
-            console.log(user);
-            dispatch({ type: "LOGIN_SUCCESS", payload: user });
-            toast.success("Check your mailbox to confirmation email.");
-            console.log(selectedLanguageNames);
-            console.log(response.data.Status);
-            localStorage.setItem("emailtoken", response.data.token);
-            const token = localStorage.getItem("emailtoken");
-            navigate(`confirmation/otp/${token}`);
-            localStorage.removeItem("emailtoken");
-          }
-        } catch (error) {
-          if (error.response && error.response.data) {
-            // Check if error.response exists and has data
-            toast.error(error.response.data.message);
-            dispatch({
-              type: "LOGIN_FAILURE",
-              payload: error.response.data.message,
-            });
-          }
-        }
+        console.log(filterData);
       },
     });
 
-  const countryOptions = countries
-    .getNames()
-    .map((country) => <option value={country}>{country}</option>);
-
   useEffect(() => {
-    const languageNames = languagesIs.getNames("en");
-    const optionsArray = Object.keys(languageNames).map((code, index) => ({
-      name: languageNames[code],
-      id: index + 1,
-    }));
-    setOptions(optionsArray);
+    axios
+      .get("http://localhost:8000/api/search/getAllLanguages")
+      .then((res) => {
+        console.log(res.data);
+        const optionsArray = res.data.map((item, index) => ({
+          name: item.language_name,
+          id: index + 1,
+        }));
+        console.log(optionsArray);
+        setLanguages(optionsArray);
+      })
+      .catch((error) => {
+        console.error("Error fetching regions:", error);
+      });
   }, []);
 
-  const onSelect = (selectedList, selectedItem) => {
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/search/getAllRegions")
+      .then((res) => {
+        console.log(res.data);
+        const optionsArray = res.data.map((item, index) => ({
+          name: item.region,
+          id: index + 1,
+        }));
+        console.log(optionsArray);
+        setRegions(optionsArray);
+      })
+      .catch((error) => {
+        console.error("Error fetching regions:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:8000/api/search/getAllSpecialties")
+      .then((res) => {
+        console.log(res.data);
+        const optionsArray = res.data.map((item, index) => ({
+          name: item.specialty_name,
+          id: index + 1,
+        }));
+        console.log(optionsArray);
+        setSpecialties(optionsArray);
+      })
+      .catch((error) => {
+        console.error("Error fetching regions:", error);
+      });
+  }, []);
+
+  const onRegionSelect = (selectedList) => {
+    handleChange({ target: { name: "region", value: selectedList } });
+  };
+
+  const onRegionRemove = (selectedList) => {
+    handleChange({ target: { name: "region", value: selectedList } });
+  };
+
+  const onLanguageSelect = (selectedList) => {
     handleChange({ target: { name: "languages", value: selectedList } });
   };
 
-  const onRemove = (selectedList, removedItem) => {
+  const onLanguageRemove = (selectedList) => {
     handleChange({ target: { name: "languages", value: selectedList } });
+  };
+
+  const onSpecialtySelect = (selectedList) => {
+    handleChange({ target: { name: "specialties", value: selectedList } });
+  };
+
+  const onSpecialtyRemove = (selectedList) => {
+    handleChange({ target: { name: "specialties", value: selectedList } });
   };
 
   return (
@@ -163,18 +175,18 @@ function TravelerFindPage() {
               )}
             </SelectWrapper>
 
-            <LanguageWrapper>
+            <Wrapper>
               <Multiselect
-                options={options}
-                selectedValues={values.languages}
-                onSelect={onSelect}
-                onRemove={onRemove}
+                options={regions}
+                selectedValues={values.region}
+                onSelect={onRegionSelect}
+                onRemove={onRegionRemove}
                 displayValue="name"
-                className={touched.languages && errors.languages ? "error" : ""}
+                className={touched.region && errors.region ? "error" : ""}
                 id="region"
                 name="region"
                 placeholder="Region"
-                value={values.languages}
+                value={values.region}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 style={{
@@ -211,14 +223,14 @@ function TravelerFindPage() {
                   },
                 }}
               />
-            </LanguageWrapper>
+            </Wrapper>
 
-            <LanguageWrapper>
+            <Wrapper>
               <Multiselect
-                options={options}
+                options={languages}
                 selectedValues={values.languages}
-                onSelect={onSelect}
-                onRemove={onRemove}
+                onSelect={onLanguageSelect}
+                onRemove={onLanguageRemove}
                 displayValue="name"
                 className={touched.languages && errors.languages ? "error" : ""}
                 id="languages"
@@ -261,10 +273,19 @@ function TravelerFindPage() {
                   },
                 }}
               />
-            </LanguageWrapper>
+            </Wrapper>
 
             <RangeWrapper>
-              <NumericInput min={0} max={100} placeholder="Range"/>
+              <NumericInput
+                min={0}
+                max={10}
+                placeholder="Range"
+                value={values.range}
+                onChange={(value) =>
+                  handleChange({ target: { name: "range", value } })
+                }
+                onBlur={handleBlur}
+              />
               <style>
                 {`
                   .react-numeric-input {
@@ -290,18 +311,18 @@ function TravelerFindPage() {
               </style>
             </RangeWrapper>
 
-            <LanguageWrapper>
+            <Wrapper>
               <Multiselect
-                options={options}
-                selectedValues={values.languages}
-                onSelect={onSelect}
-                onRemove={onRemove}
+                options={specialties}
+                selectedValues={values.specialties}
+                onSelect={onSpecialtySelect}
+                onRemove={onSpecialtyRemove}
                 displayValue="name"
                 className={touched.languages && errors.languages ? "error" : ""}
                 id="specialties"
                 name="specialties"
                 placeholder="Specialties"
-                value={values.languages}
+                value={values.specialties}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 style={{
@@ -338,7 +359,7 @@ function TravelerFindPage() {
                   },
                 }}
               />
-            </LanguageWrapper>
+            </Wrapper>
 
             <ButtonWrapper>
               <Btn type="submit">Filter</Btn>
