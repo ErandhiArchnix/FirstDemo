@@ -16,6 +16,14 @@ import {
   SelectInput,
   ErrorMsg,
   RangeWrapper,
+  BottomContainer,
+  ResultContainer,
+  ResultBar,
+  ImageContainer,
+  InfoContainer,
+  Region,
+  UserName,
+  Icon,
 } from "../styles/componentStyles/TravelerFindComponentStyles";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
@@ -34,11 +42,11 @@ languagesIs.registerLocale(
 );
 
 function TravelerFindPage() {
-  const navigate = useNavigate();
-  const { dispatch } = useContext(AuthContext); // Access the dispatch function from the AuthContext
   const [languages, setLanguages] = useState([]);
   const [regions, setRegions] = useState([]);
   const [specialties, setSpecialties] = useState([]);
+  const [locations, setLocations] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
 
   const { values, errors, handleChange, handleBlur, touched, handleSubmit } =
     useFormik({
@@ -56,9 +64,10 @@ function TravelerFindPage() {
 
         const selectedRegionNames = values.region.map((region) => region.name);
 
-        const selectedSpecialtyNames = values.languages.map(
-          (language) => language.name
+        const selectedSpecialtyNames = values.specialties.map(
+          (specialty) => specialty.name
         );
+
         const token = localStorage.getItem("token");
 
         const filterData = {
@@ -67,10 +76,55 @@ function TravelerFindPage() {
           languages: selectedLanguageNames,
           range: values.range,
           specialties: selectedSpecialtyNames,
-          headers: { Authorization: token },
         };
 
         console.log(filterData);
+
+        try {
+          const response = await axios.post(
+            "http://localhost:8000/api/search/filterUsers",
+            filterData,
+            { headers: { Authorization: token } }
+          );
+          const user = response.data;
+          console.log("Sent to backend");
+          console.log(user);
+          // Assuming response.data contains the array of user objects
+          const userData = {};
+
+          response.data.forEach((user) => {
+            const userId = user.user_id;
+            if (!userData[userId]) {
+              // If the user ID is not already in userData, initialize it
+              userData[userId] = { ...user, specialties: [], languages: [] };
+            }
+            // Add specialties and languages to the respective arrays
+            userData[userId].specialties.push({
+              id: user.specialty_id,
+              name: user.specialty_name,
+            });
+            userData[userId].languages.push({
+              id: user.language_id,
+              name: user.language_name,
+            });
+          });
+
+          // Convert the object into an array of user objects
+          setFilteredUsers(Object.values(userData));
+
+          setLocations(
+            response.data.map((item) => ({
+              lat: item.latitude,
+              lng: item.longitude,
+            }))
+          );
+          console.log(locations);
+        } catch (error) {
+          if (error.response && error.response.data) {
+            // Check if error.response exists and has data
+            toast.error(error.response.data.message);
+          }
+        }
       },
     });
 
@@ -373,11 +427,37 @@ function TravelerFindPage() {
                 mapContainerStyle={{ width: "100%", height: "100%" }}
                 center={{ lat: 0, lng: 0 }}
                 zoom={2}
-              ></GoogleMap>
+              >
+                {locations.map((location, index) => (
+                  <Marker
+                    key={index}
+                    position={{ lat: location.lat, lng: location.lng }}
+                  />
+                ))}
+              </GoogleMap>
             </LoadScript>
           </Map>
         </MapContainer>
       </TopContainer>
+      <BottomContainer>
+        <ResultContainer>
+        <FirstMsg>Result</FirstMsg>
+          {filteredUsers.map((item, index) => (
+            <ResultBar key={index}>
+              <ImageContainer
+                // src={
+                //   item.courseCover.length != 0 ? item.courseCover[0].url : ""
+                // }
+              />
+              <InfoContainer>
+                <Region>{item.region}</Region>
+                <UserName>{item.user_name}</UserName>
+              </InfoContainer>
+              <Icon></Icon>
+            </ResultBar>
+          ))}
+        </ResultContainer>
+      </BottomContainer>
     </Container>
   );
 }

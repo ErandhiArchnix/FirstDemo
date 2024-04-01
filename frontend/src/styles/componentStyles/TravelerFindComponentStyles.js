@@ -76,8 +76,9 @@ export const Form = styled.form`
 `;
 
 export const FirstMsg = styled.p`
-  color: #f0634c;
+  color: black;
   margin-bottom: 35px;
+  margin-top: 30px;
   text-align: center;
   font-size: 1.5rem;
 `;
@@ -86,6 +87,7 @@ export const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-bottom: 20px;
 `;
 
 export const Btn = styled.button`
@@ -162,4 +164,84 @@ export const RangeWrapper = styled.div`
     opacity: 0.5;
   }
   margin-bottom: 15px;
+`;
+
+export const BottomContainer = styled.div`
+  padding: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 10px;
+  /* flex-direction: row; */
+`;
+
+export const ResultContainer = styled.div`
+  flex: 1;
+  margin: 5px;
+  max-width: 100%;
+  /* height: 120px; */
+  display: flex;
+  padding-bottom: 10px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: #dadada;
+  border-radius: 15px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+`;
+
+export const ResultBar = styled.div`
+  margin: 5px;
+  width: 95%;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  box-shadow: #dadada;
+  border-radius: 15px;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+  background-color: white;
+  overflow: hidden;
+`;
+
+export const ImageContainer = styled.img`
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  margin-left: 15px;
+  border-radius: 50%;
+  background-color: red;
+  object-fit: cover;
+`;
+
+export const InfoContainer = styled.div`
+  font-size: 10px;
+  height: 90%;
+  width: 75%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+export const Region = styled.span`
+  margin-top: 5px;
+  font-size: 12px;
+  font-weight: 300;
+  color: rgba(119, 124, 136, 1);
+`;
+
+export const UserName = styled.span`
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 3px;
+  cursor: pointer;
+`;
+
+export const Icon = styled.div`
+  display: flex;
+  flex: 2;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 `;

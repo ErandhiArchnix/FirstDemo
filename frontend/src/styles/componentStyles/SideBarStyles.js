@@ -8,7 +8,7 @@ export const Container = styled.div`
 export const SidebarContainer = styled.div`
   background: white;
   color: rgba(119, 124, 136, 1);
-  height: 100vh;
+  height: 100%;
   width: 250px;
   box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px,
     rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px,
