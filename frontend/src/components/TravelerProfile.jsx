@@ -30,6 +30,15 @@ function TravelerProfile({ id }) {
   const [telephoneNumber, setTelephoneNumber] = useState("");
   const [gender, setGender] = useState("");
   const [languages, setLanguages] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     axios
@@ -68,7 +77,7 @@ function TravelerProfile({ id }) {
             <Role>Traveler</Role>
           </InfoContainer>
           <ButtonContainer>
-            <EditButton>
+            <EditButton onClick={openModal}>
                 <EditIcon />
             </EditButton>
           </ButtonContainer>
