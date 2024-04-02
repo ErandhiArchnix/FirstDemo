@@ -38,7 +38,15 @@ export const getLocations = async (req, res) => {
 
   // Get an user's details
   export const getUser = async (req, res) => {
-    const sql = "SELECT * FROM user WHERE user_id = ?";
+    const sql = `SELECT u.*,
+    l.longitude,
+    l.latitude,
+    lang.*
+    FROM user u
+    JOIN locations l ON u.location_id = l.location_id
+    JOIN user_languages ul ON u.user_id = ul.user_id
+    JOIN languages lang ON ul.language_id = lang.language_id
+    WHERE u.user_id = ?`;
     dbConfig.connection.query(sql, [req.params.user_id], (err, data) => {
       if (err) return res.json(err);
       return res.json(data);

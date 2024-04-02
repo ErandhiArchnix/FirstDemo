@@ -12,6 +12,7 @@ import EmailVerification from "./pages/emailVerification";
 import OtpConfirm from "./pages/otpConfirmation";
 import Find from "./pages/findPage";
 import Timeline from "./pages/timelinePage";
+import Profile from "./pages/profilePage";
 
 axios.defaults.withCredentials = true;
 
@@ -31,6 +32,7 @@ function App() {
             <Route path="/signup/confirmation/otp/:token" element={<OtpConfirm />} />
             <Route path="/find" element={<Find />} />
             <Route path="/timeline" element={<Timeline />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
       </Router>
     </div>

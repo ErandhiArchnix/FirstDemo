@@ -224,6 +224,7 @@ export const InfoContainer = styled.div`
   flex-direction: column;
   justify-content: center;
 `;
+
 export const Region = styled.span`
   margin-top: 5px;
   font-size: 12px;

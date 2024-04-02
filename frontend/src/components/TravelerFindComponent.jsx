@@ -1,6 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { AuthContext } from "../context/AuthContext.js";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   TopContainer,
@@ -28,13 +26,10 @@ import {
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 import { useFormik } from "formik";
-import * as Yup from "yup";
 import axios from "axios";
 import { toast } from "react-toastify";
-import "react-phone-input-2/lib/style.css";
 import Multiselect from "multiselect-react-dropdown";
 import NumericInput from "react-numeric-input";
-import { SiZig } from "react-icons/si";
 
 const languagesIs = require("@cospired/i18n-iso-languages");
 languagesIs.registerLocale(
