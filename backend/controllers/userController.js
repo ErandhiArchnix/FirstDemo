@@ -73,16 +73,18 @@ export const updateUser = async (req, res) => {
 
 // Update a user
 export const updateTravelerDetails = async (req, res) => {
-  const usernameCheckQuery = "SELECT * FROM user WHERE user_name = ?";
+  const usernameCheckQuery =
+    "SELECT * FROM user WHERE user_name = ? AND user_id != ?";
   dbConfig.connection.query(
     usernameCheckQuery,
-    [req.body.user_name],
+    [req.body.user_name, req.body.user_id],
     (usernameErr, usernameResults) => {
       if (usernameErr) {
         console.error("Error checking username existence:", usernameErr);
         return usernameErr;
       }
-      if (usernameResults.length > 0 && usernameResults.user_id !== req.body.user_id) {
+      if (usernameResults.length > 0) {
+        console.log(usernameResults.user_id);
         return res.json("User Name already exists");
       }
       const sql =
@@ -106,8 +108,11 @@ export const updateTravelerDetails = async (req, res) => {
           deleteUserLanguages,
           [req.body.user_id],
           (err, data) => {
-            if (err) return res.json(err);
-            return res.json(data);
+            if (err) {
+              return res.json(err);
+            } else {
+              res.json(data);
+            }
           }
         );
 
@@ -118,7 +123,7 @@ export const updateTravelerDetails = async (req, res) => {
 
         Promise.all(
           req.body.languages.map((language) => {
-            return new Promise((resolve, reject) => {
+            new Promise((resolve, reject) => {
               const languageExist =
                 "SELECT language_id FROM languages WHERE language_name =?";
 
@@ -131,15 +136,12 @@ export const updateTravelerDetails = async (req, res) => {
                       "Error checking language existence:",
                       langErr
                     );
-                    return next(
-                      createError(500, "Error checking language existence")
-                    );
                   }
                   if (langResults.length > 0) {
                     console.log(langResults[0].language_id);
                     dbConfig.connection.query(
                       userLanguages,
-                      [userId, langResults[0].language_id], // Assuming language_id is auto-incremented
+                      [req.body.user_id, langResults[0].language_id], // Assuming language_id is auto-incremented
                       (err, res) => {
                         if (err) {
                           reject(err);
@@ -160,7 +162,7 @@ export const updateTravelerDetails = async (req, res) => {
                         console.log("Language Added");
                         dbConfig.connection.query(
                           userLanguages,
-                          [userId, languageresult.insertId], // Assuming language_id is auto-incremented
+                          [req.body.user_id, languageresult.insertId], // Assuming language_id is auto-incremented
                           (err, res) => {
                             if (err) {
                               reject(err);
@@ -177,9 +179,9 @@ export const updateTravelerDetails = async (req, res) => {
             });
           })
         )
-          .then(() => {
-            res.status(200).json({ token, Status: "User and Languages Added" });
-          })
+          // .then(() => {
+          //   res.status(200).json({ token, Status: "User and Languages Added" });
+          // })
           .catch((error) => {
             res.status(500).json(error);
           });

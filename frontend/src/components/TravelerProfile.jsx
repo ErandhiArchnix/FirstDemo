@@ -106,21 +106,15 @@ function TravelerProfile({ id }) {
       languages: languages,
     },
     onSubmit: async (values) => {
-      // const selectedLanguageNames = values.languages.map(
-      //   (language) => language.name
-      // );
-      // const selectedRegionNames = values.region.map((region) => region.name);
-      // const selectedSpecialtyNames = values.specialties.map(
-      //   (specialty) => specialty.name
-      // );
-      // const token = localStorage.getItem("token");
+      const selectedLanguageNames = values.languages.map(language => language.name);
+
       const userData = {
         user_id: id,
         user_name: values.name,
         telephoneNumber: values.telephoneNumber,
         gender: values.gender,
         region: values.region,
-        languages: values.languages,
+        languages: selectedLanguageNames,
       };
       console.log(userData);
       try {
@@ -131,7 +125,9 @@ function TravelerProfile({ id }) {
         const user = response.data;
         console.log("Sent to backend");
         console.log(user);
-        toast.success("Traveler updated successfully")
+        toast.success("Traveler updated successfully");
+        setIsModalOpen(false);
+        window.location.reload();
       } catch (error) {
         if (error.response && error.response.data) {
           // Check if error.response exists and has data
@@ -152,7 +148,7 @@ function TravelerProfile({ id }) {
     }));
   }, [userName, gender, languages, region, telephoneNumber, setValues]);
 
-  const handleSave = () => {};
+  // const handleSave = () => {};
 
   const countryOptions = countries
     .getNames()
