@@ -22,6 +22,12 @@ import {
   Region,
   UserName,
   Icon,
+  Modal,
+  ModalContent,
+  CloseButton,
+  RequestContainer,
+  SaveButtton,
+  Topic,
 } from "../styles/componentStyles/TravelerFindComponentStyles";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
@@ -42,6 +48,19 @@ function TravelerFindPage() {
   const [specialties, setSpecialties] = useState([]);
   const [locations, setLocations] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSave = () => {
+    
+  };
 
   const { values, errors, handleChange, handleBlur, touched, handleSubmit } =
     useFormik({
@@ -197,6 +216,8 @@ function TravelerFindPage() {
   const onSpecialtyRemove = (selectedList) => {
     handleChange({ target: { name: "specialties", value: selectedList } });
   };
+
+  
 
   return (
     <Container>
@@ -448,11 +469,22 @@ function TravelerFindPage() {
                 <Region>{item.region}</Region>
                 <UserName>{item.user_name}</UserName>
               </InfoContainer>
-              <Icon></Icon>
+              <Icon><button onClick={openModal}>Request</button></Icon>
             </ResultBar>
           ))}
         </ResultContainer>
       </BottomContainer>
+      {isModalOpen && (
+        <Modal>
+          <ModalContent>
+            <CloseButton onClick={closeModal}>&times;</CloseButton>
+            <RequestContainer>
+              <Topic>Enter your Travel Request Details</Topic>
+            </RequestContainer>
+            <SaveButtton onClick={handleSave}>Send Request</SaveButtton>
+          </ModalContent>
+        </Modal>
+      )}
     </Container>
   );
 }

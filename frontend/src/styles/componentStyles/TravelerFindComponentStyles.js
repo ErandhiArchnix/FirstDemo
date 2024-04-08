@@ -246,3 +246,90 @@ export const Icon = styled.div`
   justify-content: center;
   gap: 10px;
 `;
+
+export const Modal = styled.div`
+  display: block;
+  position: fixed;
+  z-index: 1001; /* Ensure modal is above the button */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  /* height: 200px;
+  width: 200px; */
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+`;
+
+export const ModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fefefe;
+  /* padding: 30px; */
+  border-radius: 5px;
+  height: 600px;
+  width: 600px;
+`;
+
+export const RequestContainer = styled.div`
+  /* position: absolute; */
+  /* height: 450px;
+  width: 500px; */
+  margin: 50px 50px 30px 50px;
+  align-items: center;
+  flex: 1;
+  /* margin: 5px; */
+  display: flex;
+  flex-direction: column;
+`;
+
+export const CloseButton = styled.span`
+  position: absolute;
+  top: 5px;
+  right: 20px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 30px;
+`;
+
+export const SaveButtton = styled.button`
+  width: 200px;
+  height: 40px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0634c;
+  border-radius: 20px;
+  border: #f0634c;
+  color: #ffff;
+  margin-left: 200px;
+  font-weight: 600;
+  margin-bottom: 30px;
+
+  &:hover {
+    color: black;
+  }
+`;
+
+export const Topic = styled.p`
+  font-size: 25px;
+  font-weight: bold;
+  color: #85929e;
+  margin-bottom: 3px;
+`;
+
+export const InputContainer = styled.div`
+  position: relative;
+  width: 100%;
+  i {
+    position: absolute;
+    top: 1rem;
+    left: 0.8rem;
+    opacity: 0.5;
+  }
+  margin-bottom: 15px;
+`;
+

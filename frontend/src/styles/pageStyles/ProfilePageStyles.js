@@ -107,11 +107,14 @@ export const CalenderContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   box-shadow: #dadada;
   border-radius: 15px;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
   background-color: white;
+  padding: 15px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 `;
 
 export const GalleryContainer = styled.div`
@@ -122,11 +125,14 @@ export const GalleryContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  /* justify-content: center; */
   box-shadow: #dadada;
   border-radius: 15px;
   background-color: white;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 2px 8px;
+  padding: 15px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 `;
 
 export const FirstMsg = styled.p`

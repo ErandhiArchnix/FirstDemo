@@ -106,7 +106,9 @@ function TravelerProfile({ id }) {
       languages: languages,
     },
     onSubmit: async (values) => {
-      const selectedLanguageNames = values.languages.map(language => language.name);
+      const selectedLanguageNames = values.languages.map(
+        (language) => language.name
+      );
 
       const userData = {
         user_id: id,
@@ -392,8 +394,12 @@ function TravelerProfile({ id }) {
           </SubUserDetails>
         </UserDetails>
         <RightContainer>
-          <CalenderContainer>grt</CalenderContainer>
-          <GalleryContainer>hy</GalleryContainer>
+          <CalenderContainer>
+            <Topic>Calender</Topic>
+          </CalenderContainer>
+          <GalleryContainer>
+            <Topic>Gallery</Topic>
+          </GalleryContainer>
         </RightContainer>
       </BottomContainer>
     </Container>
