@@ -28,6 +28,9 @@ import {
   RequestContainer,
   SaveButtton,
   Topic,
+  FormInput,
+  RequestForm,
+  InputContainer,
 } from "../styles/componentStyles/TravelerFindComponentStyles";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
@@ -49,6 +52,7 @@ function TravelerFindPage() {
   const [locations, setLocations] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [travelType, setTravelType] = useState([]);
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -58,9 +62,7 @@ function TravelerFindPage() {
     setIsModalOpen(false);
   };
 
-  const handleSave = () => {
-    
-  };
+  const handleSave = () => {};
 
   const { values, errors, handleChange, handleBlur, touched, handleSubmit } =
     useFormik({
@@ -217,7 +219,15 @@ function TravelerFindPage() {
     handleChange({ target: { name: "specialties", value: selectedList } });
   };
 
-  
+  const onTravelTypeSelect = (selectedList) => {
+    handleChange({ target: { name: "travelType", value: selectedList } });
+  };
+
+  const onTravelTypeRemove = (selectedList) => {
+    handleChange({ target: { name: "traveltype", value: selectedList } });
+  };
+
+  const selectedTravelTypes = travelType.map((travelType) => travelType.name);
 
   return (
     <Container>
@@ -348,7 +358,7 @@ function TravelerFindPage() {
             <RangeWrapper>
               <NumericInput
                 min={0}
-                max={10}
+                max={100000}
                 placeholder="Range"
                 value={values.range}
                 onChange={(value) =>
@@ -457,19 +467,21 @@ function TravelerFindPage() {
       </TopContainer>
       <BottomContainer>
         <ResultContainer>
-        <FirstMsg>Result</FirstMsg>
+          <FirstMsg>Result</FirstMsg>
           {filteredUsers.map((item, index) => (
             <ResultBar key={index}>
               <ImageContainer
-                // src={
-                //   item.courseCover.length != 0 ? item.courseCover[0].url : ""
-                // }
+              // src={
+              //   item.courseCover.length != 0 ? item.courseCover[0].url : ""
+              // }
               />
               <InfoContainer>
                 <Region>{item.region}</Region>
                 <UserName>{item.user_name}</UserName>
               </InfoContainer>
-              <Icon><button onClick={openModal}>Request</button></Icon>
+              <Icon>
+                <button onClick={openModal}>Request</button>
+              </Icon>
             </ResultBar>
           ))}
         </ResultContainer>
@@ -480,6 +492,79 @@ function TravelerFindPage() {
             <CloseButton onClick={closeModal}>&times;</CloseButton>
             <RequestContainer>
               <Topic>Enter your Travel Request Details</Topic>
+              <RequestForm>
+                <InputContainer>
+                  <Multiselect
+                    options={specialties}
+                    selectedValues={selectedTravelTypes}
+                    onSelect={onTravelTypeSelect}
+                    onRemove={onTravelTypeRemove}
+                    displayValue="name"
+                    className={
+                      touched.languages && errors.languages ? "error" : ""
+                    }
+                    id="travelType"
+                    name="travelTYpe"
+                    placeholder="Guide Type Required"
+                    value={values.travelTypes}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                    style={{
+                      multiselectContainer: {
+                        width: "100%",
+                        height: "100%",
+                        padding: "0px 0px 0px 0px",
+                        fontSize: "1rem",
+                        borderRadius: "10px",
+                        marginBottom: "10px",
+                        boxShadow:
+                          "inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2)",
+                        transition: "box-shadow 0.2s ease-in",
+                        border: "2px #777c88 solid",
+                      },
+                      searchBox: {
+                        width: "100%",
+                        height: "100%",
+                        padding: "10px 10px",
+                        fontSize: "1rem",
+                        borderRadius: "10px",
+                        backgroundColor: "white",
+                      },
+                      option: {
+                        backgroundColor: "#ffffff",
+                        color: "#333",
+                      },
+                      chips: {
+                        backgroundColor: "#eb7c7c",
+                        fontSize: "14px",
+                        height: "28px",
+                      },
+                      optionContainer: {
+                        width: "100%",
+                      },
+                    }}
+                  />
+                </InputContainer>
+                <InputContainer>
+                  <FormInput
+                  placeholder="Places You Want to Travel">
+
+                  </FormInput>
+                </InputContainer>
+                <InputContainer>
+                  <FormInput
+                  placeholder="Message to Guide"></FormInput>
+                </InputContainer>
+                <InputContainer>
+                  <FormInput></FormInput>
+                </InputContainer>
+                <InputContainer>
+                  <FormInput></FormInput>
+                </InputContainer>
+                <InputContainer>
+                  <FormInput></FormInput>
+                </InputContainer>
+              </RequestForm>
             </RequestContainer>
             <SaveButtton onClick={handleSave}>Send Request</SaveButtton>
           </ModalContent>

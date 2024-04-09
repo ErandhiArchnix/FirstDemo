@@ -255,9 +255,10 @@ export const Modal = styled.div`
   top: 0;
   width: 100%;
   height: 100%;
-  /* height: 200px;
-  width: 200px; */
   background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
 `;
 
 export const ModalContent = styled.div`
@@ -270,7 +271,7 @@ export const ModalContent = styled.div`
   background-color: #fefefe;
   /* padding: 30px; */
   border-radius: 5px;
-  height: 600px;
+  /* height: 600px; */
   width: 600px;
 `;
 
@@ -278,7 +279,7 @@ export const RequestContainer = styled.div`
   /* position: absolute; */
   /* height: 450px;
   width: 500px; */
-  margin: 50px 50px 30px 50px;
+  margin: 30px 30px 30px 30px;
   align-items: center;
   flex: 1;
   /* margin: 5px; */
@@ -318,7 +319,7 @@ export const Topic = styled.p`
   font-size: 25px;
   font-weight: bold;
   color: #85929e;
-  margin-bottom: 3px;
+  margin-bottom: 20px;
 `;
 
 export const InputContainer = styled.div`
@@ -333,3 +334,44 @@ export const InputContainer = styled.div`
   margin-bottom: 15px;
 `;
 
+export const FormInput = styled.input`
+  width: 100%;
+  box-sizing: border-box;
+  padding: 15px;
+  font-size: 1rem;
+  border: 2px #777c88 solid;
+  border-radius: 10px;
+  margin-bottom: 10px;
+  box-shadow: inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2);
+  transition: box-shadow 0.2s ease-in;
+  &::-webkit-input-placeholder {
+    opacity: 0.6;
+    transition: opacity 0.25s ease-out;
+  }
+  &:hover::-webkit-input-placeholder,
+  &:focus::-webkit-input-placeholder {
+    opacity: 0;
+  }
+
+  &.error {
+    border: 2px solid #e7195a;
+  }
+`;
+
+export const RequestForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* max-width: 550px;
+  min-width: 300px; */
+  width: 90%;
+  height: 90%;
+  /* margin: 0% auto;
+  padding: 5px 5%; */
+
+  a {
+    color: #f0634c;
+    text-decoration: none;
+  }
+`;
