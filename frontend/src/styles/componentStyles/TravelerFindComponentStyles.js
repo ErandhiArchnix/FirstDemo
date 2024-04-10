@@ -258,11 +258,13 @@ export const Modal = styled.div`
   background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
   align-items: center;
   justify-content: center;
-  overflow-y: auto;
+  /* overflow-y: scroll; */
+  
 `;
 
-export const ModalContent = styled.div`
+export const ModalContentCover = styled.div`
   display: flex;
+  z-index: 1001;
   flex-direction: column;
   position: absolute;
   top: 50%;
@@ -271,8 +273,26 @@ export const ModalContent = styled.div`
   background-color: #fefefe;
   /* padding: 30px; */
   border-radius: 5px;
+  height: 100%;
+  width: 650px;
+  overflow-y: scroll;
+
+`;
+
+export const ModalContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  top: 60%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fefefe;
+  /* padding: 30px; */
+  border-radius: 5px;
   /* height: 600px; */
   width: 600px;
+  /* overflow-y: scroll; */
+
 `;
 
 export const RequestContainer = styled.div`
@@ -373,5 +393,32 @@ export const RequestForm = styled.form`
   a {
     color: #f0634c;
     text-decoration: none;
+  }
+`;
+
+export const DateInput = styled.span`
+  width: 100%;
+  height: 55px;
+  box-sizing: border-box;
+  padding: 15px;
+  font-size: 1rem;
+  opacity: 0.6;
+  /* transition: opacity 0.25s ease-out; */
+  border: 2px #777c88 solid;
+  border-radius: 10px;
+  margin-bottom: 15px;
+  box-shadow: inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2);
+  transition: box-shadow 0.2s ease-in;
+  &::-webkit-input-placeholder {
+    opacity: 0.6;
+    transition: opacity 0.25s ease-out;
+  }
+  &:hover::-webkit-input-placeholder,
+  &:focus::-webkit-input-placeholder {
+    opacity: 0;
+  }
+
+  &.error {
+    border: 2px solid #e7195a;
   }
 `;

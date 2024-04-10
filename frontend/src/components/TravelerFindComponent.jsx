@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import "react-date-range/dist/styles.css"; // main style file
+import "react-date-range/dist/theme/default.css";
 import {
   Container,
   TopContainer,
@@ -31,9 +33,12 @@ import {
   FormInput,
   RequestForm,
   InputContainer,
+  DateInput,
+  ModalContentCover,
 } from "../styles/componentStyles/TravelerFindComponentStyles";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-
+import { Calendar } from "react-date-range";
+import { DateRangePicker } from "react-date-range";
 import { useFormik } from "formik";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -53,6 +58,11 @@ function TravelerFindPage() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [travelType, setTravelType] = useState([]);
+  const [date, setDate] = useState({
+    startDate: new Date(),
+    endDate: new Date(),
+    key: "selection",
+  });
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -488,86 +498,79 @@ function TravelerFindPage() {
       </BottomContainer>
       {isModalOpen && (
         <Modal>
-          <ModalContent>
-            <CloseButton onClick={closeModal}>&times;</CloseButton>
-            <RequestContainer>
-              <Topic>Enter your Travel Request Details</Topic>
-              <RequestForm>
-                <InputContainer>
-                  <Multiselect
-                    options={specialties}
-                    selectedValues={selectedTravelTypes}
-                    onSelect={onTravelTypeSelect}
-                    onRemove={onTravelTypeRemove}
-                    displayValue="name"
-                    className={
-                      touched.languages && errors.languages ? "error" : ""
-                    }
-                    id="travelType"
-                    name="travelTYpe"
-                    placeholder="Guide Type Required"
-                    value={values.travelTypes}
-                    onChange={handleChange}
-                    onBlur={handleBlur}
-                    style={{
-                      multiselectContainer: {
-                        width: "100%",
-                        height: "100%",
-                        padding: "0px 0px 0px 0px",
-                        fontSize: "1rem",
-                        borderRadius: "10px",
-                        marginBottom: "10px",
-                        boxShadow:
-                          "inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2)",
-                        transition: "box-shadow 0.2s ease-in",
-                        border: "2px #777c88 solid",
-                      },
-                      searchBox: {
-                        width: "100%",
-                        height: "100%",
-                        padding: "10px 10px",
-                        fontSize: "1rem",
-                        borderRadius: "10px",
-                        backgroundColor: "white",
-                      },
-                      option: {
-                        backgroundColor: "#ffffff",
-                        color: "#333",
-                      },
-                      chips: {
-                        backgroundColor: "#eb7c7c",
-                        fontSize: "14px",
-                        height: "28px",
-                      },
-                      optionContainer: {
-                        width: "100%",
-                      },
-                    }}
-                  />
-                </InputContainer>
-                <InputContainer>
-                  <FormInput
-                  placeholder="Places You Want to Travel">
-
-                  </FormInput>
-                </InputContainer>
-                <InputContainer>
-                  <FormInput
-                  placeholder="Message to Guide"></FormInput>
-                </InputContainer>
-                <InputContainer>
-                  <FormInput></FormInput>
-                </InputContainer>
-                <InputContainer>
-                  <FormInput></FormInput>
-                </InputContainer>
-                <InputContainer>
-                  <FormInput></FormInput>
-                </InputContainer>
-              </RequestForm>
-            </RequestContainer>
-            <SaveButtton onClick={handleSave}>Send Request</SaveButtton>
-          </ModalContent>
+          <ModalContentCover>
+            <ModalContent>
+              <CloseButton onClick={closeModal}>&times;</CloseButton>
+              <RequestContainer>
+                <Topic>Enter your Travel Request Details</Topic>
+                <RequestForm>
+                  <InputContainer>
+                    <Multiselect
+                      options={specialties}
+                      selectedValues={selectedTravelTypes}
+                      onSelect={onTravelTypeSelect}
+                      onRemove={onTravelTypeRemove}
+                      displayValue="name"
+                      className={
+                        touched.languages && errors.languages ? "error" : ""
+                      }
+                      id="travelType"
+                      name="travelTYpe"
+                      placeholder="Guide Type Required"
+                      value={values.travelTypes}
+                      onChange={handleChange}
+                      onBlur={handleBlur}
+                      style={{
+                        multiselectContainer: {
+                          width: "100%",
+                          height: "100%",
+                          padding: "0px 0px 0px 0px",
+                          fontSize: "1rem",
+                          borderRadius: "10px",
+                          marginBottom: "10px",
+                          boxShadow:
+                            "inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2)",
+                          transition: "box-shadow 0.2s ease-in",
+                          border: "2px #777c88 solid",
+                        },
+                        searchBox: {
+                          width: "100%",
+                          height: "100%",
+                          padding: "10px 10px",
+                          fontSize: "1rem",
+                          borderRadius: "10px",
+                          backgroundColor: "white",
+                        },
+                        option: {
+                          backgroundColor: "#ffffff",
+                          color: "#333",
+                        },
+                        chips: {
+                          backgroundColor: "#eb7c7c",
+                          fontSize: "14px",
+                          height: "28px",
+                        },
+                        optionContainer: {
+                          width: "100%",
+                        },
+                      }}
+                    />
+                  </InputContainer>
+                  <InputContainer>
+                    <FormInput placeholder="Places You Want to Travel"></FormInput>
+                  </InputContainer>
+                  <InputContainer>
+                    <FormInput placeholder="Message to Guide"></FormInput>
+                  </InputContainer>
+                  {/* <InputContainer> */}
+                  <DateInput>Select Travel Dates</DateInput>
+                  <DateRangePicker ranges={[date]} onChange={() => {}} />
+                  {/* </InputContainer> */}
+                </RequestForm>
+              </RequestContainer>
+              <SaveButtton onClick={handleSave}>Send Request</SaveButtton>
+            </ModalContent>
+          </ModalContentCover>
         </Modal>
       )}
     </Container>
