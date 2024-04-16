@@ -1,16 +1,13 @@
-import React, { useContext } from "react";
+import React from "react";
 import {useNavigate } from "react-router-dom";
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import logo from "../assets/logo.png";
 import { LeftSide, LoginBtn, LogoutBtn, MainContainer, Middle, StyledNavLink, RightSide, btnStyles } from "../styles/componentStyles/NavBar0Styles";
-import { AuthContext } from "../context/AuthContext";
 
 
 function NavbarHorizontal() {
   const navigate = useNavigate();
-
-  const { user,dispatch } = useContext(AuthContext);
 
   return (
     <div>
@@ -28,7 +25,7 @@ function NavbarHorizontal() {
         </Middle>
 
         <RightSide>
-          {user ? (
+          {/* {user ? (
             <>
               <StyledNavLink to="/dashboard/">Dashboard</StyledNavLink>
               <LoginBtn>
@@ -44,7 +41,7 @@ function NavbarHorizontal() {
               </LoginBtn>
             </>
           ) : (
-            <>
+            <> */}
               <LoginBtn>
                 <Stack spacing={2} direction="row">
                   <Button
@@ -68,8 +65,8 @@ function NavbarHorizontal() {
                   </Button>
                 </Stack>
               </LogoutBtn>
-            </>
-          )}
+            {/* </>
+          )} */}
         </RightSide>
       </MainContainer>
     </div>

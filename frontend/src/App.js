@@ -6,6 +6,13 @@ import Signup from "./pages/signup";
 import SiteHome from "./pages/siteHome";
 import SiteMap from "./pages/siteMap";
 import SiteAbout from "./pages/siteAbout";
+import Login from "./pages/login";
+import Dashboard from "./pages/mainPage";
+import EmailVerification from "./pages/emailVerification";
+import OtpConfirm from "./pages/otpConfirmation";
+import Find from "./pages/findPage";
+import Timeline from "./pages/timelinePage";
+import Profile from "./pages/profilePage";
 
 axios.defaults.withCredentials = true;
 
@@ -19,6 +26,13 @@ function App() {
             <Route path="/" element={<SiteHome />} />
             <Route path="/map" element={<SiteMap />} />
             <Route path="/about" element={<SiteAbout />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/confirmation/:token" element={<EmailVerification />} />
+            <Route path="/signup/confirmation/otp/:token" element={<OtpConfirm />} />
+            <Route path="/find" element={<Find />} />
+            <Route path="/timeline" element={<Timeline />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
       </Router>
     </div>

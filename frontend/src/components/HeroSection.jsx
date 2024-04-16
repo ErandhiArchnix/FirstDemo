@@ -2,27 +2,42 @@ import React from "react";
 import image01 from "../assets/image01.png";
 import image02 from "../assets/image02.png";
 import image03 from "../assets/image03.png";
-import { AImg, ButtonWrapper, Container01, HLine, ImgContainer, SpanContainer, StyledButton, Text, Top } from "../styles/componentStyles/HeroSectionStyles";
-
+import {
+  AImg,
+  ButtonWrapper,
+  Container01,
+  HLine,
+  ImgContainer,
+  SpanContainer,
+  StyledButton,
+  Text,
+  Top,
+} from "../styles/componentStyles/HeroSectionStyles";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
+  const navigate = useNavigate();
+
   return (
     <div>
       <Container01>
         <Top>
-          Grow Your Skills to <br></br>Advance Your Career Path.
+          The Best Place for <br></br>Guides and Travelers.
         </Top>
 
         <SpanContainer>
-          <Text>No Payment Method </Text>
+          <Text>Find Your Perfect Guide</Text>
           <HLine></HLine>
-          <Text>Free For Students </Text>
+          <Text>Guide Your Most Preferred Travels</Text>
           <HLine></HLine>
-          <Text>Free For Teachers </Text>
+          <Text>Start for Free</Text>
         </SpanContainer>
         <ButtonWrapper>
-          <StyledButton>Start as a Guide</StyledButton>
-          <StyledButton>Start as a Traveler</StyledButton>
+          <StyledButton
+            onClick={() => navigate("/signup")}
+          >
+            Start Your Journey
+          </StyledButton>
         </ButtonWrapper>
 
         <ImgContainer>
