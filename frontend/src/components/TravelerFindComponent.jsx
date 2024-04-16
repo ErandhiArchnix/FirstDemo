@@ -44,6 +44,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Multiselect from "multiselect-react-dropdown";
 import NumericInput from "react-numeric-input";
+import { format } from "date-fns";
 
 const languagesIs = require("@cospired/i18n-iso-languages");
 languagesIs.registerLocale(
@@ -58,6 +59,9 @@ function TravelerFindPage() {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [travelType, setTravelType] = useState([]);
+  const [openCalender, setOpenCalender] = useState(false);
+  const [travelPlaces, setTravelPlaces] = useState("");
+  const [messagetoGuide, setMessagetoGuide] = useState("");
   const [date, setDate] = useState({
     startDate: new Date(),
     endDate: new Date(),
@@ -70,9 +74,20 @@ function TravelerFindPage() {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setOpenCalender(false);
+    setDate({
+      startDate: new Date(),
+      endDate: new Date(),
+      key: "selection",
+    });
+    setTravelType([]);
   };
 
-  const handleSave = () => {};
+  const handleSave = () => {
+    const rquestData = {};
+    console.log(date);
+    console.log(selectedTravelTypes.map((guideType) => guideType.name));
+  };
 
   const { values, errors, handleChange, handleBlur, touched, handleSubmit } =
     useFormik({
@@ -231,13 +246,27 @@ function TravelerFindPage() {
 
   const onTravelTypeSelect = (selectedList) => {
     handleChange({ target: { name: "travelType", value: selectedList } });
+    setTravelType(selectedList);
   };
 
   const onTravelTypeRemove = (selectedList) => {
-    handleChange({ target: { name: "traveltype", value: selectedList } });
+    handleChange({ target: { name: "travelType", value: selectedList } });
+    setTravelType(selectedList);
   };
 
-  const selectedTravelTypes = travelType.map((travelType) => travelType.name);
+  const handleDateChange = (ranges) => {
+    setDate(ranges.selection);
+  };
+
+  const handleClick = () => {
+    setOpenCalender((prev) => !prev);
+  };
+
+  const handlePlacesChange = (event) => {
+    setTravelPlaces(event.target.value);
+  };
+
+  const selectedTravelTypes = travelType.map((travelType) => travelType);
 
   return (
     <Container>
@@ -515,9 +544,9 @@ function TravelerFindPage() {
                         touched.languages && errors.languages ? "error" : ""
                       }
                       id="travelType"
-                      name="travelTYpe"
+                      name="travelType"
                       placeholder="Guide Type Required"
-                      value={values.travelTypes}
+                      value={travelType}
                       onChange={handleChange}
                       onBlur={handleBlur}
                       style={{
@@ -557,14 +586,29 @@ function TravelerFindPage() {
                     />
                   </InputContainer>
                   <InputContainer>
-                    <FormInput placeholder="Places You Want to Travel"></FormInput>
+                    <FormInput
+                      placeholder="Places You Want to Travel"
+                      value={travelPlaces}
+                      onChange={handlePlacesChange}
+                    ></FormInput>
                   </InputContainer>
                   <InputContainer>
                     <FormInput placeholder="Message to Guide"></FormInput>
                   </InputContainer>
                   {/* <InputContainer> */}
-                  <DateInput>Select Travel Dates</DateInput>
-                  <DateRangePicker ranges={[date]} onChange={() => {}} />
+                  <DateInput onClick={handleClick}>
+                    {`${format(date.startDate, "MMM dd, yyyy")} to ${format(
+                      date.endDate,
+                      "MMM dd, yyyy"
+                    )} (Click to Select Dates)`}
+                  </DateInput>
+                  {openCalender && (
+                    <DateRangePicker
+                      ranges={[date]}
+                      onChange={handleDateChange}
+                      minDate={new Date()}
+                    />
+                  )}
                   {/* </InputContainer> */}
                 </RequestForm>
               </RequestContainer>

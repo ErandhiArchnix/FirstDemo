@@ -397,19 +397,20 @@ export const RequestForm = styled.form`
 `;
 
 export const DateInput = styled.span`
-  width: 100%;
+  width: 85%;
   height: 55px;
   box-sizing: border-box;
   padding: 15px;
   font-size: 1rem;
-  opacity: 0.6;
+  /* opacity: 0.6; */
   /* transition: opacity 0.25s ease-out; */
   border: 2px #777c88 solid;
-  border-radius: 10px;
+  border-radius: 0px;
   margin-bottom: 15px;
-  box-shadow: inset 0px -3px 0px 0px rgba(187, 187, 187, 0.2);
+  box-shadow: 2px -2px 0px 0px rgba(187, 187, 187, 0.8);
   transition: box-shadow 0.2s ease-in;
-  &::-webkit-input-placeholder {
+  cursor: pointer;
+  /* &::-webkit-input-placeholder {
     opacity: 0.6;
     transition: opacity 0.25s ease-out;
   }
@@ -420,5 +421,5 @@ export const DateInput = styled.span`
 
   &.error {
     border: 2px solid #e7195a;
-  }
+  } */
 `;
